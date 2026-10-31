@@ -258,7 +258,6 @@ const CV_TEMPLATES = [
         <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
-        <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
       </div>
     </header>
 
@@ -268,7 +267,7 @@ const CV_TEMPLATES = [
         <section class="sidebar-section">
           <h2 class="section-title">Profile</h2>
           <p class="summary-text">
-            Undergraduate Web Multimedia Development student at IPCA (Portugal) with a solid technical background in computer hardware, networking, and relational databases. Seeking a 4-month university curricular internship in Poland (February 1 – June 30, 2027) focused on Frontend Engineering, Modern Web Frameworks (TypeScript/React/Angular), and component-driven UI development. Bilateral Erasmus+/university protocol and insurance fully arranged by institution.
+            Undergraduate Web Multimedia Development student at IPCA (Portugal) with a solid technical background in computer hardware, networking, and relational databases. Seeking a 4–5 month international university curricular internship (February – June 2027) focused on Frontend Engineering, Modern Web Frameworks (TypeScript/React/Angular), and component-driven UI development. Bilateral Erasmus+/university protocol and insurance fully arranged by institution.
           </p>
         </section>
 
@@ -461,7 +460,6 @@ const CV_TEMPLATES = [
         <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
-        <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
       </div>
     </header>
 
@@ -471,7 +469,7 @@ const CV_TEMPLATES = [
         <section class="sidebar-section">
           <h2 class="section-title">Profile</h2>
           <p class="summary-text">
-            Creative and user-centered Web Multimedia Development undergraduate at IPCA (Portugal) bridging the gap between product design, interaction systems, and frontend code. Seeking a 4-month university curricular internship in Poland (February 1 – June 30, 2027) in UI/UX Design, Design Systems, or Interactive Multimedia. Hands-on experience building component design libraries, high-fidelity Figma prototypes, and clean user journeys.
+            Creative and user-centered Web Multimedia Development undergraduate at IPCA (Portugal) bridging the gap between product design, interaction systems, and frontend code. Seeking a 4–5 month international university curricular internship (February – June 2027) in UI/UX Design, Design Systems, or Interactive Multimedia. Hands-on experience building component design libraries, high-fidelity Figma prototypes, and clean user journeys.
           </p>
         </section>
 
@@ -663,7 +661,6 @@ const CV_TEMPLATES = [
         <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
-        <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
       </div>
     </header>
 
@@ -673,7 +670,7 @@ const CV_TEMPLATES = [
         <section class="sidebar-section">
           <h2 class="section-title">Profile</h2>
           <p class="summary-text">
-            Web Multimedia Development undergraduate at IPCA (Portugal) with formal technical certification in Computer Hardware & Systems Management. Passionate gamer and rigorous tester seeking a 4-month curricular internship in Poland (February 1 – June 30, 2027) with Polish game studios (CD Projekt RED, 11 bit studios, Ten Square Games) or software engineering teams. Skilled in bug reproduction, test execution, hardware diagnostics, and issue tracking.
+            Web Multimedia Development undergraduate at IPCA (Portugal) with formal technical certification in Computer Hardware & Systems Management. Passionate gamer and rigorous tester seeking a 4–5 month international university curricular internship (February – June 2027) with game development studios or software engineering teams. Skilled in bug reproduction, test execution, hardware diagnostics, and issue tracking.
           </p>
         </section>
 

@@ -335,8 +335,7 @@ const htmlContent = `<!DOCTYPE html>
         </div>
         <div class="contact-links">
           <div>📧 <strong>fabioz262006@gmail.com</strong> • 📞 <strong>+351 930 534 067</strong></div>
-          <div>💻 <a href="https://github.com/FabioSilva32" target="_blank">github.com/FabioSilva32</a></div>
-          <div><span class="badge-poland">✓ Relocating to Poland / Netherlands: Spring 2027 (Feb – Jun)</span></div>
+          <div>📍 Braga / Vila Verde, Portugal • 💻 <a href="https://github.com/FabioSilva32" target="_blank">github.com/FabioSilva32</a></div>
         </div>
       </header>
 
@@ -503,7 +502,7 @@ const htmlContent = `<!DOCTYPE html>
     <footer class="footer">
       <span>Fábio Júnior Fernandes Silva • IPCA Web Multimedia Development</span>
       <span>Live Projects: CineLog (PWA) • Daymark (Personal OS) • Internship Hunter (Desktop) • Retiro Interior • StocksVault • ACRIALBI</span>
-      <span>Target Placement: Poland & Netherlands (Feb–Jun 2027)</span>
+      <span>Curricular Internship Window: Feb–Jun 2027</span>
     </footer>
   </div>
 </body>
