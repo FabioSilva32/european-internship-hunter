@@ -23,21 +23,25 @@ import {
   Wallet,
   AlertCircle,
   Info,
+  GraduationCap,
+  Home,
+  ExternalLink,
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
-  const { metrics, setActiveTab, setSelectedCompanyId, selectedCountry, setSelectedCountry } = useApp();
+  const { metrics, setActiveTab, setSelectedCompanyId, selectedCountry, setSelectedCountry, openExternal } = useApp();
 
   // Interactive Financial Comparison Calculator State
   const [plCity, setPlCity] = useState<string>('Kraków');
   const [nlCity, setNlCity] = useState<string>('Rotterdam');
   const [durationMonths, setDurationMonths] = useState<number>(5);
+  const [housingMode, setHousingMode] = useState<'dorm' | 'private'>('dorm');
   const [plEmployerComp, setPlEmployerComp] = useState<number>(0);
   const [nlEmployerComp, setNlEmployerComp] = useState<number>(0);
   const [cityHubFilter, setCityHubFilter] = useState<'ALL' | 'PL' | 'NL'>('ALL');
 
-  const plPlan = calculateCityFinancials(plCity, durationMonths, plEmployerComp);
-  const nlPlan = calculateCityFinancials(nlCity, durationMonths, nlEmployerComp);
+  const plPlan = calculateCityFinancials(plCity, durationMonths, plEmployerComp, housingMode);
+  const nlPlan = calculateCityFinancials(nlCity, durationMonths, nlEmployerComp, housingMode);
 
   const kpis = [
     {
@@ -312,22 +316,50 @@ export const Dashboard: React.FC = () => {
             </p>
           </div>
 
-          {/* Duration Selector */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-slate-400 font-medium">Duration:</span>
-            {[4, 5].map((m) => (
+          {/* Housing Mode & Duration Selector */}
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            {/* Housing Mode Toggle: University Dorm vs Private Room/Airbnb */}
+            <div className="flex items-center rounded-xl bg-slate-950 p-1 border border-slate-800 text-xs font-bold">
               <button
-                key={m}
-                onClick={() => setDurationMonths(m)}
-                className={`px-3 py-1 rounded-lg text-xs font-bold border transition ${
-                  durationMonths === m
-                    ? 'bg-indigo-600 text-white border-indigo-500'
-                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
+                onClick={() => setHousingMode('dorm')}
+                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+                  housingMode === 'dorm'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
-                {m} Months
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>🎓 University Dorm (Cheapest)</span>
               </button>
-            ))}
+              <button
+                onClick={() => setHousingMode('private')}
+                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+                  housingMode === 'private'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Home className="w-3.5 h-3.5" />
+                <span>🏠 Private Room / Airbnb</span>
+              </button>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs text-slate-400 font-medium">Duration:</span>
+              {[4, 5].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setDurationMonths(m)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
+                    durationMonths === m
+                      ? 'bg-indigo-600 text-white border-indigo-500'
+                      : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
+                  }`}
+                >
+                  {m} Mo
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -381,12 +413,16 @@ export const Dashboard: React.FC = () => {
             {/* Expense Breakdown */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
-                <span className="text-slate-400">Rent & Housing (Est.):</span>
-                <span className="font-mono font-semibold text-slate-200">€{plPlan.city.rent}/mo</span>
+                <span className="text-slate-400">
+                  {housingMode === 'dorm' ? '🎓 Univ. Dorm Rent:' : '🏠 Private Room Rent:'}
+                </span>
+                <span className="font-mono font-semibold text-emerald-300">€{plPlan.effectiveRent}/mo</span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Utilities & Internet:</span>
-                <span className="font-mono font-semibold text-slate-200">€{plPlan.city.utilitiesInternet}/mo</span>
+                <span className="font-mono font-semibold text-slate-200">
+                  {plPlan.effectiveUtilities === 0 ? '€0 (Included)' : `€${plPlan.effectiveUtilities}/mo`}
+                </span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Food & Groceries:</span>
@@ -403,10 +439,19 @@ export const Dashboard: React.FC = () => {
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Flights + Deposit (1x):</span>
                 <span className="font-mono font-semibold text-slate-300">
-                  €{plPlan.city.travelFromPortugal} + €{plPlan.city.initialDeposit}
+                  €{plPlan.city.travelFromPortugal} + €{plPlan.effectiveDeposit}
                 </span>
               </div>
             </div>
+
+            {housingMode === 'dorm' && (
+              <div className="px-3 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-[11px] text-emerald-300 flex items-center justify-between">
+                <span>🎓 Staying in a {plCity} University Dormitory saves you:</span>
+                <span className="font-mono font-black">
+                  €{plPlan.monthlyDormSavings}/mo (€{plPlan.totalDormSavingsForDuration} over {durationMonths} mo)
+                </span>
+              </div>
+            )}
 
             {/* Summary Totals */}
             <div className="p-3 rounded-xl bg-indigo-950/30 border border-indigo-800/40 space-y-1.5 text-xs">
@@ -427,7 +472,7 @@ export const Dashboard: React.FC = () => {
               <div className="flex justify-between pt-1 border-t border-indigo-800/40">
                 <span className="text-slate-300">Total Expenses ({durationMonths} mo + flights):</span>
                 <span className="font-mono font-bold text-slate-200">
-                  €{plPlan.totalExpensesNetDeposit} (+€{plPlan.city.initialDeposit} refundable deposit)
+                  €{plPlan.totalExpensesNetDeposit} (+€{plPlan.effectiveDeposit} refundable deposit)
                 </span>
               </div>
               <div className="flex justify-between">
@@ -437,6 +482,56 @@ export const Dashboard: React.FC = () => {
               <div className="flex justify-between pt-1 border-t border-indigo-800/40">
                 <span className="font-bold text-white">Estimated Personal Contribution ({durationMonths} mo):</span>
                 <span className="font-mono font-black text-amber-300">€{plPlan.estimatedPersonalContribution}</span>
+              </div>
+            </div>
+
+            {/* Nearest University Dormitories in Selected Polish City */}
+            <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+              <div className="text-[11px] font-bold text-indigo-300 flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-indigo-400" />
+                  Nearest University Dormitories in {plCity} ({plPlan.dormOptions.length})
+                </span>
+                <button
+                  onClick={() =>
+                    openExternal(`https://www.google.com/maps/search/Dom+Studencki+University+Dormitory+${encodeURIComponent(plCity)}+Poland`)
+                  }
+                  className="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                >
+                  <span>View All on Maps</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                {plPlan.dormOptions.map((dorm) => (
+                  <div key={dorm.id} className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80 space-y-1 text-[11px]">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="font-bold text-white">{dorm.name}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono font-bold text-[10px] shrink-0">
+                        ~€{dorm.monthlyPriceEur}/mo
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-slate-400">{dorm.addressOrDistrict} • {dorm.monthlyPriceRangeText}</div>
+                    <div className="text-[10px] text-indigo-300">{dorm.proximityToTechHubs}</div>
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[9.5px] text-slate-500">{dorm.eligibilityNote}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => openExternal(`https://www.google.com/maps/search/?api=1&query=${dorm.mapsQuery}`)}
+                          className="text-[10px] font-semibold text-slate-300 hover:text-white underline"
+                        >
+                          Map ↗
+                        </button>
+                        <button
+                          onClick={() => openExternal(dorm.bookingUrl)}
+                          className="px-2 py-0.5 rounded bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 text-[10px] font-bold"
+                        >
+                          Dorm Portal ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -494,12 +589,16 @@ export const Dashboard: React.FC = () => {
             {/* Expense Breakdown */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
-                <span className="text-slate-400">Rent & Housing (Est.):</span>
-                <span className="font-mono font-semibold text-slate-200">€{nlPlan.city.rent}/mo</span>
+                <span className="text-slate-400">
+                  {housingMode === 'dorm' ? '🎓 Univ. Dorm Rent:' : '🏠 Private Room Rent:'}
+                </span>
+                <span className="font-mono font-semibold text-emerald-300">€{nlPlan.effectiveRent}/mo</span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Utilities & Internet:</span>
-                <span className="font-mono font-semibold text-slate-200">€{nlPlan.city.utilitiesInternet}/mo</span>
+                <span className="font-mono font-semibold text-slate-200">
+                  {nlPlan.effectiveUtilities === 0 ? '€0 (Included)' : `€${nlPlan.effectiveUtilities}/mo`}
+                </span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Food & Groceries:</span>
@@ -516,10 +615,19 @@ export const Dashboard: React.FC = () => {
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Flights + Deposit (1x):</span>
                 <span className="font-mono font-semibold text-slate-300">
-                  €{nlPlan.city.travelFromPortugal} + €{nlPlan.city.initialDeposit}
+                  €{nlPlan.city.travelFromPortugal} + €{nlPlan.effectiveDeposit}
                 </span>
               </div>
             </div>
+
+            {housingMode === 'dorm' && (
+              <div className="px-3 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-[11px] text-emerald-300 flex items-center justify-between">
+                <span>🎓 Staying in {nlCity} Student Residence saves you:</span>
+                <span className="font-mono font-black">
+                  €{nlPlan.monthlyDormSavings}/mo (€{nlPlan.totalDormSavingsForDuration} over {durationMonths} mo)
+                </span>
+              </div>
+            )}
 
             {/* Summary Totals */}
             <div className="p-3 rounded-xl bg-orange-950/20 border border-orange-800/40 space-y-1.5 text-xs">
@@ -540,7 +648,7 @@ export const Dashboard: React.FC = () => {
               <div className="flex justify-between pt-1 border-t border-orange-800/40">
                 <span className="text-slate-300">Total Expenses ({durationMonths} mo + flights):</span>
                 <span className="font-mono font-bold text-slate-200">
-                  €{nlPlan.totalExpensesNetDeposit} (+€{nlPlan.city.initialDeposit} refundable deposit)
+                  €{nlPlan.totalExpensesNetDeposit} (+€{nlPlan.effectiveDeposit} refundable deposit)
                 </span>
               </div>
               <div className="flex justify-between">
@@ -550,6 +658,56 @@ export const Dashboard: React.FC = () => {
               <div className="flex justify-between pt-1 border-t border-orange-800/40">
                 <span className="font-bold text-white">Estimated Personal Contribution ({durationMonths} mo):</span>
                 <span className="font-mono font-black text-amber-300">€{nlPlan.estimatedPersonalContribution}</span>
+              </div>
+            </div>
+
+            {/* Nearest University Dormitories in Selected Dutch City */}
+            <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+              <div className="text-[11px] font-bold text-orange-300 flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-orange-400" />
+                  Nearest University Student Residences in {nlCity} ({nlPlan.dormOptions.length})
+                </span>
+                <button
+                  onClick={() =>
+                    openExternal(`https://www.google.com/maps/search/Student+Housing+DUWO+SSH+${encodeURIComponent(nlCity)}+Netherlands`)
+                  }
+                  className="text-[10px] text-orange-400 hover:text-orange-300 flex items-center gap-1"
+                >
+                  <span>View All on Maps</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                {nlPlan.dormOptions.map((dorm) => (
+                  <div key={dorm.id} className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80 space-y-1 text-[11px]">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="font-bold text-white">{dorm.name}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono font-bold text-[10px] shrink-0">
+                        ~€{dorm.monthlyPriceEur}/mo
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-slate-400">{dorm.addressOrDistrict} • {dorm.monthlyPriceRangeText}</div>
+                    <div className="text-[10px] text-orange-300">{dorm.proximityToTechHubs}</div>
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[9.5px] text-slate-500">{dorm.eligibilityNote}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => openExternal(`https://www.google.com/maps/search/?api=1&query=${dorm.mapsQuery}`)}
+                          className="text-[10px] font-semibold text-slate-300 hover:text-white underline"
+                        >
+                          Map ↗
+                        </button>
+                        <button
+                          onClick={() => openExternal(dorm.bookingUrl)}
+                          className="px-2 py-0.5 rounded bg-orange-600/30 hover:bg-orange-600/50 text-orange-200 border border-orange-500/40 text-[10px] font-bold"
+                        >
+                          Residence Portal ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

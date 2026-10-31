@@ -1,8 +1,8 @@
 // AI Email Generator & Template Service
 // Strictly enforces accuracy: never invents skills, projects, or credentials not in profile
 
-const getLiveProjectsBlock = (p) => `• Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
-• CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
+const getLiveProjectsBlock = (p) => `• CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
+• Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
 • Poland & NL Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
 • Retiro Interior (Tourism Portal): https://retirointerior.netlify.app
 • StocksVault (Financial Portfolio Tracker): https://stocksvault.netlify.app

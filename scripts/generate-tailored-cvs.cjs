@@ -254,8 +254,8 @@ const CV_TEMPLATES = [
         <span class="contact-item">📧 fabioz262006@gmail.com</span>
         <span class="contact-item">📞 +351 930 534 067</span>
         <span class="contact-item">📍 Braga / Vila Verde, Portugal</span>
-        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">🌐 <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></span>
+        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
         <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
@@ -346,18 +346,18 @@ const CV_TEMPLATES = [
           <h2 class="section-title">Featured Web & Software Projects</h2>
           
           <div class="proj-item">
-            <div class="proj-title">Daymark ("The Everything App") — Personal Operating System & Command Centre PWA</div>
-            <div class="proj-tech">Next.js 15 • React 19 • TypeScript • Supabase PostgreSQL • Electron & Android APK • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
-            <div class="proj-desc">
-              Architected an all-in-one Personal OS uniting 22 productivity, academic, finance, and developer modules (Kanban tasks, Eisenhower matrix, Pomodoro, habits, flashcards, expenses) with Supabase RLS sync and offline PWA/Desktop/Android builds.
-            </div>
-          </div>
-
-          <div class="proj-item">
             <div class="proj-title">CineLog — Movie & TV Series Tracking PWA (Live Production App)</div>
             <div class="proj-tech">React • JavaScript / TypeScript • TMDB REST API • Mobile PWA • <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></div>
             <div class="proj-desc">
               Progressive Web App for media exploration and review diaries with TMDB API integration, fluid touch navigation, dark-canvas styling, and instant edge CDN rendering on Vercel.
+            </div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-title">Daymark ("The Everything App") — Personal Operating System & Command Centre PWA</div>
+            <div class="proj-tech">Next.js 15 • React 19 • TypeScript • Supabase PostgreSQL • Electron & Android APK • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-desc">
+              Architected an all-in-one Personal OS uniting 22 productivity, academic, finance, and developer modules (Kanban tasks, Eisenhower matrix, Pomodoro, habits, flashcards, expenses) with Supabase RLS sync and offline PWA/Desktop/Android builds.
             </div>
           </div>
 
@@ -457,8 +457,8 @@ const CV_TEMPLATES = [
         <span class="contact-item">📧 fabioz262006@gmail.com</span>
         <span class="contact-item">📞 +351 930 534 067</span>
         <span class="contact-item">📍 Braga / Vila Verde, Portugal</span>
-        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">🌐 <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></span>
+        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
         <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
@@ -549,18 +549,18 @@ const CV_TEMPLATES = [
           <h2 class="section-title">Featured UI/UX & Multimedia Projects</h2>
           
           <div class="proj-item">
-            <div class="proj-title">Daymark ("The Everything App") — Multi-Theme Design System & Personal OS</div>
-            <div class="proj-tech">Design Tokens • 22 Interactive Modules • Next.js 15 / React 19 • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
-            <div class="proj-desc">
-              Designed a cohesive multi-theme UI system (Light, Dark, Midnight, Sunset, Forest) powering 22 modular workspaces including drag-and-drop Kanban boards, Pomodoro focus rings, habit heatmaps, and command-palette UX.
-            </div>
-          </div>
-
-          <div class="proj-item">
             <div class="proj-title">CineLog — Mobile PWA & Cinema Discovery UI/UX Architecture</div>
             <div class="proj-tech">Mobile-First UI • PWA • Dark-Mode Canvas • <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></div>
             <div class="proj-desc">
               Designed an immersive, tactile cinema tracking application interface with high-contrast movie poster grids, responsive bottom-sheet navigation, user diary review logging, and custom collection organization.
+            </div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-title">Daymark ("The Everything App") — Multi-Theme Design System & Personal OS</div>
+            <div class="proj-tech">Design Tokens • 22 Interactive Modules • Next.js 15 / React 19 • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-desc">
+              Designed a cohesive multi-theme UI system (Light, Dark, Midnight, Sunset, Forest) powering 22 modular workspaces including drag-and-drop Kanban boards, Pomodoro focus rings, habit heatmaps, and command-palette UX.
             </div>
           </div>
 
@@ -659,8 +659,8 @@ const CV_TEMPLATES = [
         <span class="contact-item">📧 fabioz262006@gmail.com</span>
         <span class="contact-item">📞 +351 930 534 067</span>
         <span class="contact-item">📍 Braga / Vila Verde, Portugal</span>
-        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">🌐 <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></span>
+        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
         <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
@@ -751,18 +751,18 @@ const CV_TEMPLATES = [
           <h2 class="section-title">Featured QA & Software Testing Projects</h2>
           
           <div class="proj-item">
-            <div class="proj-title">Daymark ("The Everything App") — Cross-Platform & Offline Sync Verification</div>
-            <div class="proj-tech">PWA / Electron / Android APK Testing • Supabase RLS • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
-            <div class="proj-desc">
-              Executed functional and regression verification across 22 integrated modules, testing offline-to-online state reconciliation, row-level security policies, and cross-platform parity across Web, Windows Electron, and Android APK builds.
-            </div>
-          </div>
-
-          <div class="proj-item">
             <div class="proj-title">CineLog PWA — Cross-Device Functional & API Testing</div>
             <div class="proj-tech">PWA Testing • TMDB API Validation • Mobile Viewports • <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></div>
             <div class="proj-desc">
               Conducted cross-browser and mobile device verification for a movie tracking web application. Tested TMDB REST API response edge-cases, asynchronous media poster caching, network latency resilience, and touch interaction fidelity.
+            </div>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-title">Daymark ("The Everything App") — Cross-Platform & Offline Sync Verification</div>
+            <div class="proj-tech">PWA / Electron / Android APK Testing • Supabase RLS • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-desc">
+              Executed functional and regression verification across 22 integrated modules, testing offline-to-online state reconciliation, row-level security policies, and cross-platform parity across Web, Windows Electron, and Android APK builds.
             </div>
           </div>
 

@@ -344,11 +344,34 @@ const htmlContent = `<!DOCTYPE html>
       <h2 class="section-title">🌟 Flagship Engineering & Production Projects (Main Focus)</h2>
 
       <div class="flagship-grid">
-        <!-- 1. Daymark ("The Everything App") -->
+        <!-- 1. CineLog (Hero Card - #1 Flagship Project) -->
+        <div class="hero-card cinelog">
+          <div>
+            <div class="hero-header">
+              <div class="hero-title">1. CineLog — Movie & Series PWA</div>
+              <span class="hero-badge green">✓ #1 Flagship App</span>
+            </div>
+            <div class="hero-tech">React • TypeScript • TMDB REST API • Mobile PWA • Vercel CI/CD</div>
+            <div class="hero-desc">
+              Production Progressive Web App engineered for cinema discovery, personal watchlists, and review diaries with touch-first ergonomics and offline capabilities.
+            </div>
+            <ul class="hero-bullets">
+              <li><strong>Component Architecture:</strong> Built with modular React and strict TypeScript, implementing smooth bottom-sheet navigation and dark-canvas tactile design.</li>
+              <li><strong>Async Data & Caching:</strong> Interfaced TMDB REST API with debounced queries, client-side caching, and poster image optimization.</li>
+              <li><strong>Production Pipeline:</strong> Continuous integration and edge CDN rendering deployed on Vercel with zero cold-start delay.</li>
+            </ul>
+          </div>
+          <div class="hero-link-box">
+            <span>🔗 Live App:</span>
+            <a href="https://cinelog-phi.vercel.app" target="_blank">cinelog-phi.vercel.app ↗</a>
+          </div>
+        </div>
+
+        <!-- 2. Daymark ("The Everything App") -->
         <div class="hero-card daymark">
           <div>
             <div class="hero-header">
-              <div class="hero-title">1. Daymark — "The Everything App" OS</div>
+              <div class="hero-title">2. Daymark — "The Everything App" OS</div>
               <span class="hero-badge blue">✓ Web / Desktop / APK</span>
             </div>
             <div class="hero-tech">Next.js 15 • React 19 • TypeScript • Supabase • Electron • Android</div>
@@ -367,29 +390,6 @@ const htmlContent = `<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- 2. CineLog (Hero Card) -->
-        <div class="hero-card cinelog">
-          <div>
-            <div class="hero-header">
-              <div class="hero-title">2. CineLog — Movie & Series PWA</div>
-              <span class="hero-badge green">✓ Live on Vercel</span>
-            </div>
-            <div class="hero-tech">React • TypeScript • TMDB REST API • Mobile PWA • Vercel CI/CD</div>
-            <div class="hero-desc">
-              Production Progressive Web App engineered for cinema discovery, personal watchlists, and review diaries with touch-first ergonomics and offline capabilities.
-            </div>
-            <ul class="hero-bullets">
-              <li><strong>Component Architecture:</strong> Built with modular React and strict TypeScript, implementing smooth bottom-sheet navigation and dark-canvas tactile design.</li>
-              <li><strong>Async Data & Caching:</strong> Interfaced TMDB REST API with debounced queries, client-side caching, and poster image optimization.</li>
-              <li><strong>Production Pipeline:</strong> Continuous integration and edge CDN rendering deployed on Vercel with zero cold-start delay.</li>
-            </ul>
-          </div>
-          <div class="hero-link-box">
-            <span>🔗 Live App:</span>
-            <a href="https://cinelog-phi.vercel.app" target="_blank">cinelog-phi.vercel.app ↗</a>
-          </div>
-        </div>
-
         <!-- 3. Poland & Netherlands Hunter (Hero Card) -->
         <div class="hero-card poland-hunter">
           <div>
@@ -399,11 +399,11 @@ const htmlContent = `<!DOCTYPE html>
             </div>
             <div class="hero-tech">TypeScript • React • SQLite • Electron • Gemini AI • Nodemailer</div>
             <div class="hero-desc">
-              Windows desktop platform automating Poland & Netherlands internship discovery, candidate fit scoring, financial comparisons, and outreach tracking.
+              Windows desktop platform automating Poland & Netherlands internship discovery, candidate fit scoring, university dorm & living cost comparisons, and outreach tracking.
             </div>
             <ul class="hero-bullets">
               <li><strong>Explainable 5-Factor Scoring:</strong> Evaluates candidate skills against Polish & Dutch tech companies, academic dates, and language requirements.</li>
-              <li><strong>IPCA Financial Calculator:</strong> City-by-city living cost & Erasmus+ grant calculator (PL €600/mo vs NL €650/mo) across 15 cities.</li>
+              <li><strong>IPCA & University Dorm Calculator:</strong> Compares PL (€600/mo) & NL (€650/mo) grants + nearest university dormitories across 15 cities.</li>
               <li><strong>Local SQLite CRM:</strong> 14-stage Kanban pipeline, auto-tracking on email dispatch, and rate-limited Gmail SMTP sending.</li>
             </ul>
           </div>
@@ -502,7 +502,7 @@ const htmlContent = `<!DOCTYPE html>
     <!-- Footer -->
     <footer class="footer">
       <span>Fábio Júnior Fernandes Silva • IPCA Web Multimedia Development</span>
-      <span>Live Projects: Daymark (Personal OS) • CineLog (PWA) • Internship Hunter (Desktop) • Retiro Interior • StocksVault • ACRIALBI</span>
+      <span>Live Projects: CineLog (PWA) • Daymark (Personal OS) • Internship Hunter (Desktop) • Retiro Interior • StocksVault • ACRIALBI</span>
       <span>Target Placement: Poland & Netherlands (Feb–Jun 2027)</span>
     </footer>
   </div>

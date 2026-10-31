@@ -20,6 +20,8 @@ import {
   ChevronRight,
   TrendingUp,
   Calculator,
+  GraduationCap,
+  Home,
 } from 'lucide-react';
 
 export const CompanyResearch: React.FC = () => {
@@ -37,6 +39,7 @@ export const CompanyResearch: React.FC = () => {
   const [companyList, setCompanyList] = useState<Company[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [housingMode, setHousingMode] = useState<'dorm' | 'private'>('dorm');
 
   // Load all companies for sidebar selection
   useEffect(() => {
@@ -300,31 +303,66 @@ export const CompanyResearch: React.FC = () => {
             </div>
           </div>
 
-          {/* City Financial & IPCA Scholarship Snapshot */}
+          {/* City Financial & IPCA Scholarship Snapshot + Nearest University Dormitories */}
           {(() => {
-            const fin = calculateCityFinancials(company.city, 5, 0);
+            const fin = calculateCityFinancials(company.city, 5, 0, housingMode);
             if (!fin) return null;
             const isNL = fin.city.countryCode === 'NL';
             return (
-              <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                  <h3 className="text-xs font-bold text-white flex items-center gap-2">
-                    <Calculator className="w-4 h-4 text-emerald-400" />
-                    IPCA Scholarship & Living Cost Snapshot: {fin.city.city}, {fin.city.country} (~5 Months)
-                  </h3>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                    isNL
-                      ? 'bg-orange-500/15 text-orange-300 border-orange-500/30'
-                      : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
-                  }`}>
-                    {fin.scholarshipGroup} — €{fin.monthlyScholarship}/month ({IPCA_SCHOLARSHIP_CONFIG.sourceLabel})
-                  </span>
+              <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                  <div className="space-y-0.5">
+                    <h3 className="text-xs font-bold text-white flex items-center gap-2">
+                      <Calculator className="w-4 h-4 text-emerald-400" />
+                      IPCA Scholarship, University Dorms & Living Cost Snapshot: {fin.city.city}, {fin.city.country} (~5 Months)
+                    </h3>
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                      isNL
+                        ? 'bg-orange-500/15 text-orange-300 border-orange-500/30'
+                        : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
+                    }`}>
+                      {fin.scholarshipGroup} — €{fin.monthlyScholarship}/month ({IPCA_SCHOLARSHIP_CONFIG.sourceLabel})
+                    </span>
+                  </div>
+
+                  {/* Housing Mode Switcher */}
+                  <div className="flex items-center rounded-xl bg-slate-950 p-1 border border-slate-800 text-[11px] font-bold">
+                    <button
+                      onClick={() => setHousingMode('dorm')}
+                      className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition ${
+                        housingMode === 'dorm'
+                          ? 'bg-emerald-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <GraduationCap className="w-3.5 h-3.5" />
+                      <span>🎓 University Dorm (€{fin.city.dormRent}/mo)</span>
+                    </button>
+                    <button
+                      onClick={() => setHousingMode('private')}
+                      className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition ${
+                        housingMode === 'private'
+                          ? 'bg-indigo-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Home className="w-3.5 h-3.5" />
+                      <span>🏠 Private Room / Airbnb (€{fin.city.rent}/mo)</span>
+                    </button>
+                  </div>
                 </div>
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                   <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                    <div className="text-[10px] text-slate-400">Est. Monthly Living</div>
+                    <div className="text-[10px] text-slate-400">
+                      Est. Monthly Living ({housingMode === 'dorm' ? 'Univ. Dorm' : 'Private'})
+                    </div>
                     <div className="text-sm font-black text-white font-mono">€{fin.monthlyExpenses}/mo</div>
-                    <div className="text-[10px] text-slate-500">Rent ~€{fin.city.rent}</div>
+                    <div className="text-[10px] text-emerald-400">
+                      {housingMode === 'dorm'
+                        ? `Dorm ~€${fin.effectiveRent}/mo (Saves €${fin.monthlyDormSavings}/mo)`
+                        : `Rent ~€${fin.effectiveRent}/mo + €${fin.effectiveUtilities} util`}
+                    </div>
                   </div>
                   <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30">
                     <div className="text-[10px] text-emerald-300">IPCA Grant (5 mo)</div>
@@ -332,14 +370,83 @@ export const CompanyResearch: React.FC = () => {
                     <div className="text-[10px] text-emerald-400/80">€{fin.monthlyScholarship}/mo</div>
                   </div>
                   <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                    <div className="text-[10px] text-slate-400">Total 5-Mo Expenses</div>
-                    <div className="text-sm font-black text-slate-200 font-mono">€{fin.totalExpensesGross}</div>
-                    <div className="text-[10px] text-slate-500">Incl. flights & deposit</div>
+                    <div className="text-[10px] text-slate-400">Total 5-Mo Living + Flights</div>
+                    <div className="text-sm font-black text-slate-200 font-mono">€{fin.totalExpensesNetDeposit}</div>
+                    <div className="text-[10px] text-slate-500">+€{fin.effectiveDeposit} refundable deposit</div>
                   </div>
                   <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30">
-                    <div className="text-[10px] text-amber-300">Monthly Gap (Unpaid)</div>
-                    <div className="text-sm font-black text-amber-300 font-mono">{fin.monthlyGapOrSurplus} €/mo</div>
-                    <div className="text-[10px] text-amber-400/80">Est. personal: €{fin.estimatedPersonalContribution}</div>
+                    <div className="text-[10px] text-amber-300">Monthly Balance (Unpaid)</div>
+                    <div className={`text-sm font-black font-mono ${fin.monthlyGapOrSurplus >= 0 ? 'text-emerald-400' : 'text-amber-300'}`}>
+                      {fin.monthlyGapOrSurplus >= 0 ? `+€${fin.monthlyGapOrSurplus}/mo surplus` : `${fin.monthlyGapOrSurplus} €/mo gap`}
+                    </div>
+                    <div className="text-[10px] text-amber-400/80">5-mo personal: €{fin.estimatedPersonalContribution}</div>
+                  </div>
+                </div>
+
+                {/* Nearest University Student Dormitories Next to This Company */}
+                <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-emerald-400" />
+                      <span>Nearest University Student Dormitories Next to {company.name} ({fin.city.city})</span>
+                    </div>
+                    <button
+                      onClick={() =>
+                        openExternal(
+                          `https://www.google.com/maps/search/${encodeURIComponent(
+                            (isNL ? 'Student Housing DUWO SSH near ' : 'Dom Studencki Akademik near ') +
+                              company.name +
+                              ' ' +
+                              company.city
+                          )}`
+                        )
+                      }
+                      className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold flex items-center gap-1.5 transition"
+                    >
+                      <MapPin className="w-3 h-3" />
+                      <span>Search Dorms Near {company.name} on Google Maps ↗</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    {fin.dormOptions.map((dorm) => (
+                      <div
+                        key={dorm.id}
+                        className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between gap-2 text-xs"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="font-bold text-white leading-snug">{dorm.name}</span>
+                            <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono font-bold text-[10px] shrink-0">
+                              ~€{dorm.monthlyPriceEur}/mo
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-indigo-300 font-medium">{dorm.university}</div>
+                          <div className="text-[10.5px] text-slate-400">
+                            📍 {dorm.addressOrDistrict} • <strong>{dorm.monthlyPriceRangeText}</strong>
+                          </div>
+                          <div className="text-[10.5px] text-emerald-300/90">🚇 {dorm.proximityToTechHubs}</div>
+                          <div className="text-[10px] text-slate-500">{dorm.eligibilityNote}</div>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-1.5 border-t border-slate-800/80">
+                          <button
+                            onClick={() => openExternal(`https://www.google.com/maps/search/?api=1&query=${dorm.mapsQuery}`)}
+                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10.5px] font-semibold flex items-center gap-1 transition"
+                          >
+                            <MapPin className="w-3 h-3 text-purple-400" />
+                            <span>View on Map ↗</span>
+                          </button>
+                          <button
+                            onClick={() => openExternal(dorm.bookingUrl)}
+                            className="px-2.5 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 text-[10.5px] font-bold flex items-center gap-1 transition"
+                          >
+                            <span>Official Dorm Portal</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
