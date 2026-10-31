@@ -18,9 +18,13 @@ interface Toast {
   message: string;
 }
 
+export type SupportedCountryFilter = 'All' | 'Poland' | 'Netherlands';
+
 interface AppContextType {
   activeTab: NavTab;
   setActiveTab: (tab: NavTab) => void;
+  selectedCountry: SupportedCountryFilter;
+  setSelectedCountry: (country: SupportedCountryFilter) => void;
   selectedCompanyId: string | null;
   setSelectedCompanyId: (id: string | null) => void;
   selectedOpportunityId: string | null;
@@ -41,6 +45,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
+  const [selectedCountry, setSelectedCountry] = useState<SupportedCountryFilter>('All');
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>('comp-bloober');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -138,6 +143,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         activeTab,
         setActiveTab,
+        selectedCountry,
+        setSelectedCountry,
         selectedCompanyId,
         setSelectedCompanyId,
         selectedOpportunityId,

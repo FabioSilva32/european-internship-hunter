@@ -1,12 +1,25 @@
 // AI Email Generator & Template Service
 // Strictly enforces accuracy: never invents skills, projects, or credentials not in profile
 
-const getLiveProjectsBlock = (p) => `• CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
-• Poland Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
+const getLiveProjectsBlock = (p) => `• Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
+• CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
+• Poland & NL Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
 • Retiro Interior (Tourism Portal): https://retirointerior.netlify.app
 • StocksVault (Financial Portfolio Tracker): https://stocksvault.netlify.app
 • ACRIALBI (Creative Showcase): https://acrialbi.netlify.app
 • GitHub Profile: ${p.github_url || 'https://github.com/FabioSilva32'}`;
+
+const getCountryLabel = (c) => {
+  const country = (c?.country || 'Poland').toLowerCase();
+  if (country.includes('netherlands') || country === 'nl') return 'the Netherlands';
+  return 'Poland';
+};
+
+const getSectorAdjective = (c) => {
+  const country = (c?.country || 'Poland').toLowerCase();
+  if (country.includes('netherlands') || country === 'nl') return 'Dutch';
+  return 'Polish';
+};
 
 const TEMPLATES = {
   // A. Speculative internship inquiry
@@ -18,13 +31,13 @@ const TEMPLATES = {
 
 I am an undergraduate student studying Desenvolvimento Web Multimédia (Web Multimedia Development) at IPCA (Polytechnic Institute of Cávado and Ave) in Portugal. 
 
-As part of my degree program, I will be completing a 4-month university curricular internship in Poland, ideally from February through June 2027.
+As part of my degree program, I will be completing an approximately 4 to 5-month university curricular internship in ${getCountryLabel(c)}, ideally from February through June 2027.
 
 I have been following ${c.name}'s work${c.products ? ` on ${c.products}` : ''} and greatly admire your focus on quality engineering and digital innovation. My academic and project background focuses on modern web engineering (${p.skillsList || 'TypeScript, React, Node.js'}), UI/UX design systems in Figma, and interactive multimedia.
 
-I am writing to inquire whether ${c.name} accepts university internship placements during the Spring 2027 semester. I would welcome the opportunity to contribute to your engineering or design teams while completing my academic requirements.
+I am writing to politely inquire whether ${c.name} would consider hosting an international university intern for approximately five months in early 2027. I would welcome the opportunity to contribute to your engineering or design teams while completing my academic requirements.
 
-My CV is attached, and you can explore my live deployed web applications and source code here:
+My CV and portfolio are attached, and you can explore my live deployed web applications and source code here:
 ${getLiveProjectsBlock(p)}
 
 Thank you for your time and consideration.
@@ -39,17 +52,17 @@ I hope this email finds you well.
 
 My name is ${p.full_name}, and I am currently in my penultimate year studying Desenvolvimento Web Multimédia (Web Multimedia Development) at IPCA (Instituto Politécnico do Cávado e do Ave) in Portugal.
 
-I am planning my final-year mandatory university internship and am specifically seeking an on-site or hybrid opportunity in Poland (especially ${c.city || 'Kraków/Warsaw'}) starting in February 2027 for a duration of approximately 4 to 5 months (February through June 2027).
+I am planning my final-year mandatory university internship and am specifically seeking an on-site or hybrid opportunity in ${getCountryLabel(c)} (${c.city || (getCountryLabel(c) === 'the Netherlands' ? 'Amsterdam/Rotterdam/Utrecht' : 'Kraków/Warsaw')}) starting in February 2027 for a duration of approximately 4 to 5 months (February through June 2027).
 
 Why I am contacting ${c.name}:
-${c.name} has built a standout reputation${c.products ? ` through projects like ${c.products}` : ' in the Polish technology sector'}. My degree specifically bridges the gap between software engineering, modern frontend architecture, and user experience design. Over the course of my studies, I have gained hands-on experience in:
-- Modern Web & Software Development: ${p.skillsList || 'TypeScript, React, Node.js, REST APIs, Git'}
+${c.name} has built a standout reputation${c.products ? ` through projects like ${c.products}` : ` in the ${getSectorAdjective(c)} technology and digital sector`}. My degree specifically bridges the gap between software engineering, modern frontend architecture, and user experience design. Over the course of my studies, I have gained hands-on experience in:
+- Modern Web & Software Development: ${p.skillsList || 'TypeScript, React, Next.js, Node.js, REST APIs, Git'}
 - Design Systems & Prototyping: Component-driven UI development and Figma prototyping
 - Multimedia & Interactive Systems: Digital media pipelines, accessibility standards, and testing
 
-Does ${c.name} consider speculative curricular internship placements for university students during the Spring 2027 period? An official university internship protocol and insurance can be fully arranged by my institution.
+Would ${c.name} consider hosting an international university intern for a curricular placement during the Spring 2027 period? An official Erasmus+ / university internship protocol and insurance can be fully arranged by my institution.
 
-I have attached my current CV for your review. You can also explore my live applications, project repositories, and design case studies at:
+I have attached my current CV and portfolio for your review. You can also explore my live applications, project repositories, and design case studies at:
 ${getLiveProjectsBlock(p)}
 
 I would be delighted to speak briefly if there might be an opening or future intake. Thank you very much for your time.
@@ -84,7 +97,7 @@ ${p.signature || `Best regards,\n${p.full_name}`}`
 
 I am writing to apply for the ${c.jobTitle || 'Internship'} position at ${c.name}, which I discovered via your careers page.
 
-As a student completing my degree in Desenvolvimento Web Multimédia at IPCA (Instituto Politécnico do Cávado e do Ave, Portugal), I am seeking a full-time university placement in Poland from February 2027 to June 2027 (4-5 months).
+As a student completing my degree in Desenvolvimento Web Multimédia at IPCA (Instituto Politécnico do Cávado e do Ave, Portugal), I am seeking a full-time university placement in ${getCountryLabel(c)} from February 2027 to June 2027 (4–5 months).
 
 The requirements outlined for the position strongly match my profile:
 - Practical experience with ${c.requiredTech || p.skillsList || 'modern web technologies, frontend frameworks, and responsive design'}
@@ -109,7 +122,7 @@ ${p.signature || `Warm regards,\n${p.full_name}\n${p.portfolio_url}`}`
       subject: `Game QA / Testing University Internship (Spring 2027) – ${p.full_name}`,
       body: `Dear ${c.recipientName || c.name + ' QA Team'},
 
-I am an undergraduate student in Web Multimedia Development at IPCA (Portugal), seeking a 4-month university internship in Game Quality Assurance and Functionality Testing in Poland from February through June 2027.
+I am an undergraduate student in Web Multimedia Development at IPCA (Portugal), seeking a 4 to 5-month university internship in Game Quality Assurance and Functionality Testing in ${getCountryLabel(c)} from February through June 2027.
 
 With an educational background combining programming concepts, multimedia pipelines, and interactive systems, I have a deep appreciation for the technical discipline required in game testing: methodical bug isolation, clear Jira-style defect reproduction, edge-case analysis, and build verification.
 
@@ -125,7 +138,7 @@ ${p.signature || `Best regards,\n${p.full_name}`}`
 
 I hope this message finds you well.
 
-My name is ${p.full_name}, and I am completing my degree in Web Multimedia Development at IPCA in Portugal. I am currently seeking a 4-month university curricular internship in Poland (especially Kraków or Warsaw) for the Spring 2027 semester (February to June 2027).
+My name is ${p.full_name}, and I am completing my degree in Web Multimedia Development at IPCA in Portugal. I am currently seeking a 4 to 5-month university curricular internship in ${getCountryLabel(c)} (${c.city || getCountryLabel(c)}) for the Spring 2027 semester (February to June 2027).
 
 I am writing to ${c.name} specifically because of your high standards of production and gameplay experience${c.products ? ` in titles such as ${c.products}` : ''}.
 
@@ -170,7 +183,7 @@ I am currently studying Web Multimedia Development at IPCA (Instituto Politécni
 
 I have worked with Unity and C# on gameplay mechanics, state machines, and player controllers, and I am comfortable with version control (Git) and collaborative development.
 
-Poland has one of the world's most vibrant game development communities, and completing my university internship with ${c.name} would be an extraordinary milestone for my professional development.
+${getCountryLabel(c) === 'the Netherlands' ? 'The Netherlands' : 'Poland'} has one of Europe's most vibrant game development communities, and completing my university internship with ${c.name} would be an extraordinary milestone for my professional development.
 
 Please find my CV attached. You can view my source code and demos at:
 - GitHub: ${p.github_url}
@@ -189,7 +202,7 @@ ${p.signature || `Sincerely,\n${p.full_name}`}`
       subject: `Frontend / Web Engineering Internship (Spring 2027) – ${p.full_name}`,
       body: `Dear ${c.recipientName || c.name + ' Frontend Team'},
 
-I am an undergraduate student in Web Multimedia Development at IPCA (Portugal), seeking a 4-month frontend development internship in Poland from February through June 2027.
+I am an undergraduate student in Web Multimedia Development at IPCA (Portugal), seeking a 4 to 5-month frontend development internship in ${getCountryLabel(c)} from February through June 2027.
 
 My core technical focus is modern TypeScript, React, responsive CSS/Tailwind, and accessible component architectures. I would love to bring my enthusiasm and frontend skills to ${c.name}.
 
@@ -205,7 +218,7 @@ ${p.signature || `Best regards,\n${p.full_name}`}`
 
 I hope you are having a productive week.
 
-I am an undergraduate student in my final year of Web Multimedia Development at IPCA in Portugal, writing to explore internship or trainee opportunities in frontend development at ${c.name} in Poland starting February 2027 (February to June 2027).
+I am an undergraduate student in my final year of Web Multimedia Development at IPCA in Portugal, writing to explore internship or trainee opportunities in frontend development at ${c.name} in ${getCountryLabel(c)} starting February 2027 (February to June 2027).
 
 My technical profile is centered on modern web applications:
 - Strong foundations in TypeScript, JavaScript (ESNext), and React
@@ -231,7 +244,7 @@ ${p.signature || `Kind regards,\n${p.full_name}\n${p.university}`}`
       subject: `Software Engineering University Internship (Spring 2027) – ${p.full_name}`,
       body: `Dear ${c.recipientName || c.name + ' Engineering Lead'},
 
-I am a computer science and multimedia student at IPCA in Portugal, seeking a 4-month software engineering university placement in Poland from February to June 2027.
+I am a computer science and multimedia student at IPCA in Portugal, seeking a 4 to 5-month software engineering university placement in ${getCountryLabel(c)} from February to June 2027.
 
 I possess solid foundations in object-oriented programming, data structures, TypeScript/JavaScript, and backend REST APIs with Node.js and SQL databases.
 
@@ -272,7 +285,7 @@ ${p.signature || `Sincerely,\n${p.full_name}`}`
 
 I am an undergraduate student in Web Multimedia Development at IPCA (Portugal), passionate about UI/UX design, interactive prototyping in Figma, and design systems.
 
-I am seeking a 4-month university internship in Poland from February through June 2027. My dual training in design and frontend engineering allows me to design user-centered experiences that are technically feasible.
+I am seeking a 4 to 5-month university internship in ${getCountryLabel(c)} from February through June 2027. My dual training in design and frontend engineering allows me to design user-centered experiences that are technically feasible.
 
 My CV and design portfolio (${p.portfolio_url}) are available for your review.
 
@@ -286,7 +299,7 @@ ${p.signature || `Kind regards,\n${p.full_name}`}`
 
 I hope this email finds you well.
 
-My name is ${p.full_name}, and I am studying Web Multimedia Development at IPCA in Portugal. I am reaching out to inquire about UI/UX design, product design, or web design internship placements at ${c.name} in Poland starting in February 2027 (February to June 2027).
+My name is ${p.full_name}, and I am studying Web Multimedia Development at IPCA in Portugal. I am reaching out to inquire about UI/UX design, product design, or web design internship placements at ${c.name} in ${getCountryLabel(c)} starting in February 2027 (February to June 2027).
 
 What makes my profile unique is the integration of UX design principles with real-world frontend implementation skills:
 - User-centric design in Figma: Wireframing, interactive prototyping, user flows, and component design systems
@@ -322,7 +335,7 @@ ${p.signature || `Kind regards,\n${p.full_name}`}`
 
 I hope you are having a wonderful week.
 
-I am writing to politely follow up on the university internship inquiry I submitted last week regarding a placement from February through June 2027 in Poland.
+I am writing to politely follow up on the university internship inquiry I submitted last week regarding a placement from February through June 2027 in ${getCountryLabel(c)}.
 
 I understand this is a busy period for your team, but I wanted to reaffirm my enthusiasm for ${c.name} and reiterate my availability for a brief conversation or technical assessment.
 
@@ -470,9 +483,11 @@ async function generateEmail({
     name: company.name,
     recipientName: company.contact_name || company.recipient_name,
     city: company.city,
+    country: company.country || opportunity?.country || 'Poland',
     products: formatList(company.products),
     jobTitle: opportunity?.title || '',
     requiredTech: formatList(opportunity?.required_technologies),
+    isOfficialVacancy: opportunity ? opportunity.is_official_vacancy === 1 : false,
   };
 
 function sanitizeEmailOutput(text) {
@@ -490,6 +505,7 @@ function sanitizeEmailOutput(text) {
     .replace(/\bmarço de 2027 até junho\/julho de 2027\b/gi, 'fevereiro de 2027 até junho de 2027')
     .replace(/\bmarço de 2027\b/gi, 'fevereiro de 2027')
     // Clean all project URLs: remove ?tab=..., #..., /portfolio, etc.
+    .replace(/https:\/\/daymark-lynnx\.vercel\.app\/?[^\s\n•)]*/g, 'https://daymark-lynnx.vercel.app')
     .replace(/https:\/\/cinelog-phi\.vercel\.app\/?[^\s\n•)]*/g, 'https://cinelog-phi.vercel.app')
     .replace(/https:\/\/retirointerior\.netlify\.app\/?[^\s\n•)]*/g, 'https://retirointerior.netlify.app')
     .replace(/https:\/\/stocksvault\.netlify\.app\/?[^\s\n•)]*/g, 'https://stocksvault.netlify.app')
@@ -502,20 +518,23 @@ function sanitizeEmailOutput(text) {
   const activeGeminiKey = geminiKey || (apiKey && apiKey.trim().startsWith('AIzaSy') ? apiKey : null);
   if ((provider === 'gemini' || !apiKey) && activeGeminiKey) {
     try {
+      const targetCountryName = getCountryLabel(compData);
       const promptText = `You are an expert career advisor generating a professional, natural, high-converting internship email for a university student.
 CRITICAL RULES:
 1. NEVER hallucinate or invent skills, degrees, or experience not provided in the student profile.
 2. The student studies Desenvolvimento Web Multimédia at IPCA, Portugal.
-3. Internship timeframe: February 1, 2027 to June 30, 2027 (4 months) in Poland.
-4. Keep the tone professional, sincere, concise, and non-generic. No cheesy praise or artificial buzzwords.
-5. Highlight the student's live deployed projects and code repositories (USE CLEAN DOMAIN URLS ONLY, NO SUBPATHS OR ANCHORS):
+3. Internship timeframe: February 1, 2027 to June 30, 2027 (approximately 4 to 5 months) in ${targetCountryName} (${compData.city || targetCountryName}).
+4. Do NOT claim an internship vacancy exists unless compData.isOfficialVacancy is true; for speculative applications, politely ask whether the company would consider hosting an international university intern for ~5 months in early 2027.
+5. Keep the tone professional, sincere, concise, and non-generic in professional English.
+6. Highlight the student's live deployed projects and code repositories (USE CLEAN DOMAIN URLS ONLY, NO SUBPATHS OR ANCHORS):
+   • Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
    • CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
-   • Poland Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
+   • Poland & NL Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
    • Retiro Interior (Tourism Platform): https://retirointerior.netlify.app
    • StocksVault (Financial Portfolio Tracker): https://stocksvault.netlify.app
    • ACRIALBI (Creative Showcase): https://acrialbi.netlify.app
    • GitHub: https://github.com/FabioSilva32
-6. Return a JSON object with strictly two keys: "subject" and "body".
+7. Return a JSON object with strictly two keys: "subject" and "body".
 
 Student Profile: ${JSON.stringify(profile)}
 Target Company: ${JSON.stringify(compData)}
@@ -577,9 +596,9 @@ Custom Instructions: ${customInstructions || 'None'}`;
 CRITICAL RULES:
 1. NEVER hallucinate or invent skills, degrees, or experience not provided in the student profile.
 2. The student studies Desenvolvimento Web Multimédia at IPCA, Portugal.
-3. Internship timeframe: February 1, 2027 to June 30, 2027 (4 months) in Poland.
-4. Keep the tone professional, sincere, concise, and non-generic. No cheesy praise or artificial buzzwords.
-5. Highlight the student's live deployed projects with clean URLs (https://cinelog-phi.vercel.app, https://retirointerior.netlify.app, https://stocksvault.netlify.app, https://acrialbi.netlify.app, https://github.com/FabioSilva32).
+3. Internship timeframe: February 1, 2027 to June 30, 2027 (approximately 4 to 5 months) in ${getCountryLabel(compData)}.
+4. Keep the tone professional, sincere, concise, and non-generic. Do not claim an unverified internship vacancy exists.
+5. Highlight the student's live deployed projects with clean URLs (https://daymark-lynnx.vercel.app, https://cinelog-phi.vercel.app, https://retirointerior.netlify.app, https://stocksvault.netlify.app, https://acrialbi.netlify.app, https://github.com/FabioSilva32).
 6. Return a JSON object with strictly two keys: "subject" and "body".`
             },
             {

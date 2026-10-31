@@ -205,25 +205,25 @@ const baseCss = `
   .proj-item {
     background: #f8fafc;
     border-left: 2.5px solid var(--accent);
-    padding: 4px 7px;
-    margin-bottom: 4.5px;
+    padding: 3.5px 6.5px;
+    margin-bottom: 3.8px;
     border-radius: 0 4px 4px 0;
   }
   .proj-title {
-    font-size: 9.8px;
+    font-size: 9.5px;
     font-weight: 700;
     color: #0f172a;
   }
   .proj-tech {
-    font-size: 8.5px;
+    font-size: 8.2px;
     color: var(--accent);
     font-weight: 600;
-    margin-bottom: 2px;
+    margin-bottom: 1.5px;
   }
   .proj-desc {
-    font-size: 9px;
+    font-size: 8.7px;
     color: #334155;
-    line-height: 1.35;
+    line-height: 1.32;
   }
 `;
 
@@ -254,11 +254,11 @@ const CV_TEMPLATES = [
         <span class="contact-item">📧 fabioz262006@gmail.com</span>
         <span class="contact-item">📞 +351 930 534 067</span>
         <span class="contact-item">📍 Braga / Vila Verde, Portugal</span>
-        <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
+        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">🌐 <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></span>
-        <span class="contact-item">🌿 <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a></span>
+        <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
-        <span class="badge-relocate">✓ Relocating to Poland (Feb–Jun 2027)</span>
+        <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
       </div>
     </header>
 
@@ -342,9 +342,17 @@ const CV_TEMPLATES = [
 
       <!-- Right Column: Projects & Experience -->
       <main>
-        <section style="margin-bottom: 9px;">
+        <section style="margin-bottom: 8px;">
           <h2 class="section-title">Featured Web & Software Projects</h2>
           
+          <div class="proj-item">
+            <div class="proj-title">Daymark ("The Everything App") — Personal Operating System & Command Centre PWA</div>
+            <div class="proj-tech">Next.js 15 • React 19 • TypeScript • Supabase PostgreSQL • Electron & Android APK • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-desc">
+              Architected an all-in-one Personal OS uniting 22 productivity, academic, finance, and developer modules (Kanban tasks, Eisenhower matrix, Pomodoro, habits, flashcards, expenses) with Supabase RLS sync and offline PWA/Desktop/Android builds.
+            </div>
+          </div>
+
           <div class="proj-item">
             <div class="proj-title">CineLog — Movie & TV Series Tracking PWA (Live Production App)</div>
             <div class="proj-tech">React • JavaScript / TypeScript • TMDB REST API • Mobile PWA • <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></div>
@@ -354,26 +362,18 @@ const CV_TEMPLATES = [
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">Poland Internship Hunter & Automation Desktop App</div>
+            <div class="proj-title">European Internship Hunter & Outreach CRM (Poland & Netherlands)</div>
             <div class="proj-tech">TypeScript • React • Tailwind CSS • SQLite • Electron • <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32/poland-internship-hunter</a></div>
             <div class="proj-desc">
-              Built an automated desktop CRM & outreach platform tailored for European internships. Implemented 5-factor fit scoring algorithms, dynamic email generation, local SQLite database persistence, and rate-limited direct SMTP transmission.
+              Automated desktop CRM & outreach platform supporting Poland & the Netherlands with 5-factor fit scoring, IPCA scholarship & living-cost financial calculator, local SQLite persistence, and direct SMTP dispatch.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">Retiro Interior & ACRIALBI — Live Deployed Web Platforms</div>
-            <div class="proj-tech">HTML5 • CSS3 • JavaScript • Responsive UX • <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a> • <a href="https://acrialbi.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">acrialbi.netlify.app</a></div>
+            <div class="proj-title">StocksVault, Retiro Interior & ACRIALBI — Live Deployed Web Platforms</div>
+            <div class="proj-tech">Angular • TypeScript • HTML5/CSS3 • <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a> • <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a> • <a href="https://acrialbi.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">acrialbi.netlify.app</a></div>
             <div class="proj-desc">
-              Designed modern, responsive web portals on Netlify featuring fluid section navigation, mobile-first flex/grid layouts, and accessible contrast compliance.
-            </div>
-          </div>
-
-          <div class="proj-item">
-            <div class="proj-title">StocksVault — Financial Portfolio & Stock Tracker (Live Production App)</div>
-            <div class="proj-tech">Angular • TypeScript • REST API • Data Visualizations • <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></div>
-            <div class="proj-desc">
-              Architected and deployed a responsive financial portfolio manager with reactive Angular services for real-time asset allocations, comparative stock analytics, interactive watchlists, and performance metrics dashboards.
+              Engineered a reactive Angular financial portfolio tracker (StocksVault) alongside responsive tourism and creative showcase portals (Retiro Interior & ACRIALBI) deployed on Netlify.
             </div>
           </div>
         </section>
@@ -457,11 +457,11 @@ const CV_TEMPLATES = [
         <span class="contact-item">📧 fabioz262006@gmail.com</span>
         <span class="contact-item">📞 +351 930 534 067</span>
         <span class="contact-item">📍 Braga / Vila Verde, Portugal</span>
-        <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
+        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">🌐 <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></span>
-        <span class="contact-item">🌿 <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a></span>
+        <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
-        <span class="badge-relocate">✓ Relocating to Poland (Feb–Jun 2027)</span>
+        <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
       </div>
     </header>
 
@@ -545,38 +545,38 @@ const CV_TEMPLATES = [
 
       <!-- Right Column -->
       <main>
-        <section style="margin-bottom: 9px;">
+        <section style="margin-bottom: 8px;">
           <h2 class="section-title">Featured UI/UX & Multimedia Projects</h2>
           
+          <div class="proj-item">
+            <div class="proj-title">Daymark ("The Everything App") — Multi-Theme Design System & Personal OS</div>
+            <div class="proj-tech">Design Tokens • 22 Interactive Modules • Next.js 15 / React 19 • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-desc">
+              Designed a cohesive multi-theme UI system (Light, Dark, Midnight, Sunset, Forest) powering 22 modular workspaces including drag-and-drop Kanban boards, Pomodoro focus rings, habit heatmaps, and command-palette UX.
+            </div>
+          </div>
+
           <div class="proj-item">
             <div class="proj-title">CineLog — Mobile PWA & Cinema Discovery UI/UX Architecture</div>
             <div class="proj-tech">Mobile-First UI • PWA • Dark-Mode Canvas • <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></div>
             <div class="proj-desc">
-              Designed an immersive, tactile cinema tracking application interface. Formatted high-contrast movie poster exploration grids, responsive bottom-sheet navigation, user diary review logging, and custom collection organization.
+              Designed an immersive, tactile cinema tracking application interface with high-contrast movie poster grids, responsive bottom-sheet navigation, user diary review logging, and custom collection organization.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">Poland Internship Hunter — Design System & UI Architecture</div>
+            <div class="proj-title">European Internship Hunter — Design System & UI Architecture</div>
             <div class="proj-tech">Figma • Design Tokens • Dark Mode UI • Tailwind CSS • <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32/poland-internship-hunter</a></div>
             <div class="proj-desc">
-              Designed a comprehensive high-density desktop interface system with custom tokenized dark-mode color palettes, accessible typography hierarchies, intuitive pipeline Kanban boards, and modal micro-interactions.
+              Designed a high-density desktop interface system supporting Poland & Netherlands internship search, interactive financial comparison calculators, pipeline Kanban boards, and modal micro-interactions.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">Retiro Interior & ACRIALBI — Live Deployed Web Platforms</div>
-            <div class="proj-tech">Figma • Responsive UX • Visual Hierarchy • <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a> • <a href="https://acrialbi.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">acrialbi.netlify.app</a></div>
+            <div class="proj-title">Retiro Interior, ACRIALBI & StocksVault — Live Deployed Web Platforms</div>
+            <div class="proj-tech">Figma • Responsive UX • Data Visualization • <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a> • <a href="https://acrialbi.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">acrialbi.netlify.app</a> • <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></div>
             <div class="proj-desc">
-              Created digital UI experiences featuring concept showcases, user-centered content layouts, accessible color palettes, and responsive grid systems for diverse display sizes.
-            </div>
-          </div>
-
-          <div class="proj-item">
-            <div class="proj-title">StocksVault — Financial Dashboard & Asset Comparison UX (Live App)</div>
-            <div class="proj-tech">Angular • Financial Visualizations • High-Density Tables • <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></div>
-            <div class="proj-desc">
-              Designed clean data tables and equity comparison views. Focused on typographic hierarchy for financial metrics, intuitive watchlist filters, and responsive layout scaling across mobile and desktop.
+              Created digital UI experiences featuring tourism booking flows, creative concept galleries, and high-density financial portfolio comparison dashboards with WCAG-compliant contrast.
             </div>
           </div>
         </section>
@@ -659,11 +659,11 @@ const CV_TEMPLATES = [
         <span class="contact-item">📧 fabioz262006@gmail.com</span>
         <span class="contact-item">📞 +351 930 534 067</span>
         <span class="contact-item">📍 Braga / Vila Verde, Portugal</span>
-        <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
+        <span class="contact-item">⚡ <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></span>
         <span class="contact-item">🌐 <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></span>
-        <span class="contact-item">🌿 <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a></span>
+        <span class="contact-item">📈 <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></span>
         <span class="contact-item">💻 <a href="https://github.com/FabioSilva32" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32</a></span>
-        <span class="badge-relocate">✓ Relocating to Poland (Feb–Jun 2027)</span>
+        <span class="badge-relocate">✓ Relocating to Poland / Netherlands (Feb–Jun 2027)</span>
       </div>
     </header>
 
@@ -747,9 +747,17 @@ const CV_TEMPLATES = [
 
       <!-- Right Column -->
       <main>
-        <section style="margin-bottom: 9px;">
+        <section style="margin-bottom: 8px;">
           <h2 class="section-title">Featured QA & Software Testing Projects</h2>
           
+          <div class="proj-item">
+            <div class="proj-title">Daymark ("The Everything App") — Cross-Platform & Offline Sync Verification</div>
+            <div class="proj-tech">PWA / Electron / Android APK Testing • Supabase RLS • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-desc">
+              Executed functional and regression verification across 22 integrated modules, testing offline-to-online state reconciliation, row-level security policies, and cross-platform parity across Web, Windows Electron, and Android APK builds.
+            </div>
+          </div>
+
           <div class="proj-item">
             <div class="proj-title">CineLog PWA — Cross-Device Functional & API Testing</div>
             <div class="proj-tech">PWA Testing • TMDB API Validation • Mobile Viewports • <a href="https://cinelog-phi.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">cinelog-phi.vercel.app</a></div>
@@ -759,26 +767,18 @@ const CV_TEMPLATES = [
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">End-to-End Application Testing Matrix — Poland Internship Hunter</div>
+            <div class="proj-title">End-to-End Application Testing Matrix — European Internship Hunter</div>
             <div class="proj-tech">Black-Box Testing • Edge Case Validation • Process Isolation • SQLite • <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32/poland-internship-hunter</a></div>
             <div class="proj-desc">
-              Designed and executed manual test suites validating database transaction concurrency, JSON payload integrity, rate-limiting boundaries, and IPC message handling across multi-process Electron architectures.
+              Designed and executed manual & automated test suites validating SQLite migrations, multi-country filtering (PL & NL), financial calculator formulas, rate-limiting boundaries, and IPC message handling.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">Retiro Interior & ACRIALBI — Responsive UI/UX & Web Verification</div>
-            <div class="proj-tech">Cross-Browser Testing • Responsive Viewports • <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a> • <a href="https://acrialbi.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">acrialbi.netlify.app</a></div>
+            <div class="proj-title">StocksVault, Retiro Interior & ACRIALBI — Functional & Responsive Verification</div>
+            <div class="proj-tech">Angular • Boundary Testing • Cross-Browser QA • <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a> • <a href="https://retirointerior.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">retirointerior.netlify.app</a></div>
             <div class="proj-desc">
-              Executed cross-platform verification for deployed Netlify web applications. Verified viewport breakpoints, section navigation reliability, DOM element accessibility, and typography scaling.
-            </div>
-          </div>
-
-          <div class="proj-item">
-            <div class="proj-title">StocksVault — Financial Computation & Component Integrity Testing (Live App)</div>
-            <div class="proj-tech">Angular • Data Validation • Boundary Testing • <a href="https://stocksvault.netlify.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">stocksvault.netlify.app</a></div>
-            <div class="proj-desc">
-              Conducted functional verification across stock portfolio allocation formulas, currency conversions, comparison table sorting logic, and asynchronous REST state transitions.
+              Conducted functional verification across stock portfolio allocation formulas, currency conversions, responsive viewport breakpoints, and asynchronous REST state transitions.
             </div>
           </div>
         </section>

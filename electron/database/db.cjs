@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const initSqlJs = require('sql.js');
 const { SCHEMA_SQL } = require('./schema.cjs');
+const { seedNetherlandsData } = require('./netherlandsData.cjs');
 
 let dbInstance = null;
 
@@ -104,7 +105,7 @@ async function initializeDatabase() {
   // Execute schema definitions
   dbInstance.exec(SCHEMA_SQL);
 
-  // Automatic schema migrations for documents table
+  // Automatic schema migrations for documents & multi-country support
   try {
     const docInfo = dbInstance.prepare("PRAGMA table_info(documents)").all();
     const hasFileName = docInfo && docInfo.some(c => c.name === 'file_name');
@@ -117,12 +118,34 @@ async function initializeDatabase() {
       const fn = path.basename(doc.file_path) || doc.title;
       dbInstance.prepare("UPDATE documents SET file_name = ? WHERE id = ?").run(fn, doc.id);
     }
+
+    // Safe migration: add country_code to companies
+    const compInfo = dbInstance.prepare("PRAGMA table_info(companies)").all();
+    if (compInfo && !compInfo.some(c => c.name === 'country_code')) {
+      dbInstance.exec("ALTER TABLE companies ADD COLUMN country_code TEXT DEFAULT 'PL';");
+      dbInstance.exec("UPDATE companies SET country_code = CASE WHEN country = 'Netherlands' THEN 'NL' ELSE 'PL' END;");
+    }
+
+    // Safe migration: add country_code to opportunities
+    const oppInfo = dbInstance.prepare("PRAGMA table_info(opportunities)").all();
+    if (oppInfo && !oppInfo.some(c => c.name === 'country_code')) {
+      dbInstance.exec("ALTER TABLE opportunities ADD COLUMN country_code TEXT DEFAULT 'PL';");
+      dbInstance.exec("UPDATE opportunities SET country_code = CASE WHEN country = 'Netherlands' THEN 'NL' ELSE 'PL' END;");
+    }
+
+    // Safe migration: add country to applications
+    const appInfo = dbInstance.prepare("PRAGMA table_info(applications)").all();
+    if (appInfo && !appInfo.some(c => c.name === 'country')) {
+      dbInstance.exec("ALTER TABLE applications ADD COLUMN country TEXT DEFAULT 'Poland';");
+    }
   } catch (mErr) {
     console.warn('[DB Migration] Notice:', mErr.message);
   }
 
   // Seed default data if needed
   seedInitialData(dbInstance);
+  // Seed Netherlands (NL) companies & opportunities idempotently without disturbing existing records
+  seedNetherlandsData(dbInstance);
 
   return dbInstance;
 }
@@ -547,7 +570,11 @@ function seedInitialData(db) {
     { key: 'ai_provider', value: 'builtin', desc: 'AI Provider: builtin or openai' },
     { key: 'openai_api_key', value: '', desc: 'Encrypted or masked OpenAI API Key' },
     { key: 'preferred_cities', value: JSON.stringify(['Kraków', 'Warsaw', 'Gdańsk']), desc: 'Primary target cities in Poland' },
-    { key: 'working_hours_only', value: 'true', desc: 'Only schedule emails during Polish business hours (9am - 5pm CET)' }
+    { key: 'working_hours_only', value: 'true', desc: 'Only schedule emails during Polish business hours (9am - 5pm CET)' },
+    { key: 'supported_countries', value: JSON.stringify(['Poland', 'Netherlands']), desc: 'Supported internship destination countries (PL, NL)' },
+    { key: 'ipca_scholarship_pl_eur', value: '600', desc: 'IPCA Group 2 monthly scholarship rate for Poland (€/month)' },
+    { key: 'ipca_scholarship_nl_eur', value: '650', desc: 'IPCA Group 1 monthly scholarship rate for the Netherlands (€650/month)' },
+    { key: 'ipca_scholarship_source', value: 'IPCA scholarship document supplied by user', desc: 'Source label for scholarship estimates (requires confirmation with IPCA)' }
   ];
 
   const insertSetting = db.prepare('INSERT OR IGNORE INTO settings (key, value, description) VALUES (?, ?, ?)');

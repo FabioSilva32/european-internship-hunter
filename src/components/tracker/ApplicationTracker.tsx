@@ -37,9 +37,10 @@ const ALL_STATUSES: ApplicationStatus[] = [
 ];
 
 export const ApplicationTracker: React.FC = () => {
-  const { showToast, refreshMetrics, setActiveTab, setSelectedCompanyId } = useApp();
+  const { showToast, refreshMetrics, setActiveTab, setSelectedCompanyId, selectedCountry } = useApp();
 
   const [applications, setApplications] = useState<Application[]>([]);
+  const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban');
   const [search, setSearch] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
@@ -52,12 +53,21 @@ export const ApplicationTracker: React.FC = () => {
   const [newCity, setNewCity] = useState<string>('Kraków');
   const [newStatus, setNewStatus] = useState<ApplicationStatus>('Ready to contact');
 
+  useEffect(() => {
+    if (window.desktopAPI?.getCompanies) {
+      window.desktopAPI.getCompanies({}).then((list: any[]) => {
+        setCompanyOptions(list || []);
+      });
+    }
+  }, []);
+
   const loadApplications = async () => {
     setLoading(true);
     if (window.desktopAPI?.getApplications) {
       try {
         const data = await window.desktopAPI.getApplications({
           status: selectedStatus === 'All' ? undefined : selectedStatus,
+          country: selectedCountry === 'All' ? undefined : selectedCountry,
           search,
         });
         setApplications(data);
@@ -70,7 +80,7 @@ export const ApplicationTracker: React.FC = () => {
 
   useEffect(() => {
     loadApplications();
-  }, [selectedStatus, search]);
+  }, [selectedStatus, selectedCountry, search]);
 
   const handleStatusChange = async (appId: string, status: ApplicationStatus) => {
     if (window.desktopAPI?.updateApplicationStatus) {
@@ -265,7 +275,9 @@ export const ApplicationTracker: React.FC = () => {
                             <h4 className="text-xs font-bold text-white group-hover:text-indigo-300 transition">
                               {app.company_name}
                             </h4>
-                            <span className="text-[10px] text-slate-400">{app.city}, Poland</span>
+                            <span className="text-[10px] text-slate-400">
+                              {app.city}, {(app as any).company_country || (app as any).country || 'Poland'}
+                            </span>
                           </div>
                           <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-slate-900 text-slate-300">
                             {app.priority}
@@ -377,16 +389,29 @@ export const ApplicationTracker: React.FC = () => {
                 <label className="text-slate-300 font-medium">Target Company</label>
                 <select
                   value={newCompanyId}
-                  onChange={(e) => setNewCompanyId(e.target.value)}
+                  onChange={(e) => {
+                    const compId = e.target.value;
+                    setNewCompanyId(compId);
+                    const found = companyOptions.find((c) => c.id === compId);
+                    if (found?.city) setNewCity(found.city);
+                  }}
                   className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-200"
                 >
-                  <option value="comp-cdpr">CD Projekt RED (Warsaw)</option>
-                  <option value="comp-bloober">Bloober Team (Kraków)</option>
-                  <option value="comp-brainly">Brainly (Kraków)</option>
-                  <option value="comp-11bit">11 bit studios (Warsaw)</option>
-                  <option value="comp-allegro">Allegro (Warsaw)</option>
-                  <option value="comp-netguru">Netguru (Gdańsk)</option>
-                  <option value="comp-flyingwildhog">Flying Wild Hog (Kraków)</option>
+                  {companyOptions.length > 0 ? (
+                    companyOptions.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        [{c.country === 'Netherlands' ? 'NL' : 'PL'}] {c.name} ({c.city})
+                      </option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="comp-cdpr">[PL] CD Projekt RED (Warsaw)</option>
+                      <option value="comp-bloober">[PL] Bloober Team (Kraków)</option>
+                      <option value="comp-brainly">[PL] Brainly (Kraków)</option>
+                      <option value="comp-nl-dept">[NL] DEPT® Digital Agency (Amsterdam)</option>
+                      <option value="comp-nl-framer">[NL] Framer (Amsterdam)</option>
+                    </>
+                  )}
                 </select>
               </div>
 
@@ -408,10 +433,25 @@ export const ApplicationTracker: React.FC = () => {
                     onChange={(e) => setNewCity(e.target.value)}
                     className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-200"
                   >
-                    <option value="Kraków">Kraków</option>
-                    <option value="Warsaw">Warsaw</option>
-                    <option value="Gdańsk">Gdańsk</option>
-                    <option value="Wrocław">Wrocław</option>
+                    <optgroup label="Poland (PL)">
+                      <option value="Kraków">Kraków</option>
+                      <option value="Warsaw">Warsaw</option>
+                      <option value="Gdańsk">Gdańsk</option>
+                      <option value="Wrocław">Wrocław</option>
+                      <option value="Poznań">Poznań</option>
+                    </optgroup>
+                    <optgroup label="Netherlands (NL)">
+                      <option value="Amsterdam">Amsterdam</option>
+                      <option value="Rotterdam">Rotterdam</option>
+                      <option value="Utrecht">Utrecht</option>
+                      <option value="Eindhoven">Eindhoven</option>
+                      <option value="The Hague">The Hague</option>
+                      <option value="Groningen">Groningen</option>
+                      <option value="Delft">Delft</option>
+                      <option value="Leiden">Leiden</option>
+                      <option value="Arnhem">Arnhem</option>
+                      <option value="Breda">Breda</option>
+                    </optgroup>
                   </select>
                 </div>
 

@@ -17,6 +17,8 @@ export const Header: React.FC = () => {
   const {
     activeTab,
     setActiveTab,
+    selectedCountry,
+    setSelectedCountry,
     isGlobalPaused,
     toggleGlobalPause,
     toasts,
@@ -28,11 +30,11 @@ export const Header: React.FC = () => {
   const getTabTitle = () => {
     switch (activeTab) {
       case 'dashboard':
-        return { title: 'Executive Overview', subtitle: 'Pipeline metrics, target dates, and Polish tech market status' };
+        return { title: 'Executive Overview', subtitle: 'Pipeline metrics, IPCA scholarship comparison, and Poland (PL) & Netherlands (NL) status' };
       case 'discovery':
-        return { title: 'Opportunity & Company Discovery', subtitle: 'Search verified vacancies and speculative targets across Poland' };
+        return { title: 'Opportunity & Company Discovery', subtitle: 'Search verified vacancies and speculative targets across Poland & the Netherlands' };
       case 'research':
-        return { title: 'Company Intelligence & Fit Score', subtitle: 'Deep analysis, tech stacks, degree relevance, and verified contacts' };
+        return { title: 'Company Intelligence & Fit Score', subtitle: 'Deep analysis, tech stacks, degree relevance, and verified contacts (PL & NL)' };
       case 'generator':
         return { title: 'Personalized Email AI Generator', subtitle: 'Tailored outreach with 10 templates, 2 variants, and zero hallucinations' };
       case 'tracker':
@@ -46,7 +48,7 @@ export const Header: React.FC = () => {
       case 'settings':
         return { title: 'System Settings & Audit Trail', subtitle: 'API keys, daily rate limits, OAuth providers, and tamper-evident logs' };
       default:
-        return { title: 'Poland Internship Hunter', subtitle: '2027 University Placement' };
+        return { title: 'Internship Hunter (PL & NL)', subtitle: '2027 University Placement' };
     }
   };
 
@@ -54,10 +56,11 @@ export const Header: React.FC = () => {
 
   const handleQuickSearch = async () => {
     setActiveTab('discovery');
-    showToast('Running multi-provider sync across Poland job boards...', 'info');
+    const targetLabel = selectedCountry === 'All' ? 'Poland & Netherlands' : selectedCountry;
+    showToast(`Running multi-provider sync across ${targetLabel} job boards...`, 'info');
     if (window.desktopAPI?.runSearch) {
       try {
-        const res = await window.desktopAPI.runSearch({ city: 'All', category: 'All' });
+        const res = await window.desktopAPI.runSearch({ country: selectedCountry, city: 'All', category: 'All' });
         showToast(`Search complete! Found ${res.newOpportunities} new opportunities.`, 'success');
         refreshMetrics();
       } catch (err: any) {
@@ -79,10 +82,31 @@ export const Header: React.FC = () => {
 
         {/* Right Header Controls */}
         <div className="flex items-center gap-3">
+          {/* Global Country Switcher Pill */}
+          <div className="flex items-center rounded-lg bg-slate-800/90 p-0.5 border border-slate-700 text-xs font-semibold">
+            {([
+              { id: 'All', label: 'All (PL + NL)' },
+              { id: 'Poland', label: 'Poland (PL)' },
+              { id: 'Netherlands', label: 'Netherlands (NL)' },
+            ] as const).map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setSelectedCountry(c.id)}
+                className={`px-2.5 py-1 rounded-md transition ${
+                  selectedCountry === c.id
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+
           {/* Target Period Pill */}
-          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-950/40 border border-indigo-800/40 text-indigo-300 text-xs font-medium">
+          <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-950/40 border border-indigo-800/40 text-indigo-300 text-xs font-medium">
             <Calendar className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Target: Feb – Jun 2027 (4 Mo.)</span>
+            <span>Target: Feb – Jun 2027 (4–5 Mo.)</span>
           </div>
 
           {/* Quick Search Action */}
@@ -91,7 +115,13 @@ export const Header: React.FC = () => {
             className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition shadow-sm"
           >
             <Search className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Run Poland Search</span>
+            <span>
+              {selectedCountry === 'All'
+                ? 'Search PL & NL'
+                : selectedCountry === 'Netherlands'
+                ? 'Run NL Search'
+                : 'Run Poland Search'}
+            </span>
           </button>
 
           {/* Emergency Global Pause Toggle */}

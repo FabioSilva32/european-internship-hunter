@@ -94,49 +94,58 @@ const htmlContent = `<!DOCTYPE html>
       gap: 5px;
     }
 
-    /* Flagship Hero Projects (2-Column or Stacked) */
+    /* Flagship Hero Projects (3-Column) */
     .flagship-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 9px;
-      margin-bottom: 10px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 9px;
     }
     .hero-card {
       border: 1.5px solid #cbd5e1;
       border-radius: 6px;
-      padding: 9px 11px;
+      padding: 8px 9px;
       background: #f8fafc;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
+    .hero-card.daymark {
+      border-top: 4px solid #2563eb;
+      background: linear-gradient(180deg, #eff6ff 0%, #fafafa 18%);
+    }
     .hero-card.cinelog {
       border-top: 4px solid #059669;
-      background: linear-gradient(180deg, #f0fdf4 0%, #fafafa 15%);
+      background: linear-gradient(180deg, #f0fdf4 0%, #fafafa 18%);
     }
     .hero-card.poland-hunter {
       border-top: 4px solid #7c3aed;
-      background: linear-gradient(180deg, #faf5ff 0%, #fafafa 15%);
+      background: linear-gradient(180deg, #faf5ff 0%, #fafafa 18%);
     }
 
     .hero-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .hero-title {
-      font-size: 11.5px;
+      font-size: 10.2px;
       font-weight: 800;
       color: #0f172a;
     }
     .hero-badge {
-      font-size: 8px;
+      font-size: 7.5px;
       font-weight: 800;
-      padding: 2px 6px;
+      padding: 1.5px 5px;
       border-radius: 4px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
+    }
+    .hero-badge.blue {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
     }
     .hero-badge.green {
       background: #d1fae5;
@@ -150,28 +159,28 @@ const htmlContent = `<!DOCTYPE html>
     }
 
     .hero-tech {
-      font-size: 8.8px;
+      font-size: 8.1px;
       font-weight: 700;
-      color: #3b82f6;
-      margin-bottom: 5px;
+      color: #2563eb;
+      margin-bottom: 4px;
     }
     .hero-desc {
-      font-size: 9.3px;
+      font-size: 8.6px;
       color: #334155;
-      line-height: 1.4;
-      margin-bottom: 6px;
+      line-height: 1.35;
+      margin-bottom: 5px;
     }
     .hero-bullets {
       list-style: none;
-      font-size: 8.8px;
+      font-size: 8.3px;
       color: #475569;
-      line-height: 1.38;
-      margin-bottom: 6px;
+      line-height: 1.34;
+      margin-bottom: 5px;
     }
     .hero-bullets li {
       position: relative;
-      padding-left: 13px;
-      margin-bottom: 3.5px;
+      padding-left: 11px;
+      margin-bottom: 3px;
     }
     .hero-bullets li::before {
       content: "▸";
@@ -181,10 +190,10 @@ const htmlContent = `<!DOCTYPE html>
       font-weight: 800;
     }
     .hero-link-box {
-      margin-top: 4px;
-      padding-top: 5px;
+      margin-top: 3px;
+      padding-top: 4px;
       border-top: 1px dashed #cbd5e1;
-      font-size: 9px;
+      font-size: 8.3px;
       font-weight: 700;
       display: flex;
       justify-content: space-between;
@@ -327,7 +336,7 @@ const htmlContent = `<!DOCTYPE html>
         <div class="contact-links">
           <div>📧 <strong>fabioz262006@gmail.com</strong> • 📞 <strong>+351 930 534 067</strong></div>
           <div>💻 <a href="https://github.com/FabioSilva32" target="_blank">github.com/FabioSilva32</a></div>
-          <div><span class="badge-poland">✓ Relocating to Poland: Spring 2027 (Feb 1 – Jun 30)</span></div>
+          <div><span class="badge-poland">✓ Relocating to Poland / Netherlands: Spring 2027 (Feb – Jun)</span></div>
         </div>
       </header>
 
@@ -335,11 +344,34 @@ const htmlContent = `<!DOCTYPE html>
       <h2 class="section-title">🌟 Flagship Engineering & Production Projects (Main Focus)</h2>
 
       <div class="flagship-grid">
-        <!-- 1. CineLog (Hero Card) -->
+        <!-- 1. Daymark ("The Everything App") -->
+        <div class="hero-card daymark">
+          <div>
+            <div class="hero-header">
+              <div class="hero-title">1. Daymark — "The Everything App" OS</div>
+              <span class="hero-badge blue">✓ Web / Desktop / APK</span>
+            </div>
+            <div class="hero-tech">Next.js 15 • React 19 • TypeScript • Supabase • Electron • Android</div>
+            <div class="hero-desc">
+              All-in-one Personal Operating System & Command Centre uniting 22 modular workspaces into a fast, offline-first PWA, Windows desktop app, and Android APK.
+            </div>
+            <ul class="hero-bullets">
+              <li><strong>22 Integrated Modules:</strong> Kanban Tasks, Eisenhower Matrix, Pomodoro Timer, Habit Heatmaps, Flashcards, Grade Calculator, Finance Tracker & Dev Snippets.</li>
+              <li><strong>Cloud + Local Hybrid Sync:</strong> Supabase PostgreSQL with Row-Level Security (RLS), Google OAuth, and full offline localStorage fallback.</li>
+              <li><strong>Multi-Platform Delivery:</strong> Deployed on Vercel with Electron desktop packaging and Capacitor Android APK builds.</li>
+            </ul>
+          </div>
+          <div class="hero-link-box">
+            <span>🔗 Live App:</span>
+            <a href="https://daymark-lynnx.vercel.app" target="_blank">daymark-lynnx.vercel.app ↗</a>
+          </div>
+        </div>
+
+        <!-- 2. CineLog (Hero Card) -->
         <div class="hero-card cinelog">
           <div>
             <div class="hero-header">
-              <div class="hero-title">1. CineLog — Movie & Series Tracking PWA</div>
+              <div class="hero-title">2. CineLog — Movie & Series PWA</div>
               <span class="hero-badge green">✓ Live on Vercel</span>
             </div>
             <div class="hero-tech">React • TypeScript • TMDB REST API • Mobile PWA • Vercel CI/CD</div>
@@ -347,37 +379,37 @@ const htmlContent = `<!DOCTYPE html>
               Production Progressive Web App engineered for cinema discovery, personal watchlists, and review diaries with touch-first ergonomics and offline capabilities.
             </div>
             <ul class="hero-bullets">
-              <li><strong>Modern Component Architecture:</strong> Built with modular React and strict TypeScript, implementing smooth bottom-sheet navigation and dark-canvas tactile design.</li>
-              <li><strong>Asynchronous Data & Caching:</strong> Interfaced The Movie Database (TMDB) REST API with debounced queries, client-side caching, and poster image optimization.</li>
-              <li><strong>Automated Production Pipeline:</strong> Continuous integration and edge CDN rendering deployed on Vercel with zero cold-start delay.</li>
+              <li><strong>Component Architecture:</strong> Built with modular React and strict TypeScript, implementing smooth bottom-sheet navigation and dark-canvas tactile design.</li>
+              <li><strong>Async Data & Caching:</strong> Interfaced TMDB REST API with debounced queries, client-side caching, and poster image optimization.</li>
+              <li><strong>Production Pipeline:</strong> Continuous integration and edge CDN rendering deployed on Vercel with zero cold-start delay.</li>
             </ul>
           </div>
           <div class="hero-link-box">
-            <span>🔗 Live Application:</span>
+            <span>🔗 Live App:</span>
             <a href="https://cinelog-phi.vercel.app" target="_blank">cinelog-phi.vercel.app ↗</a>
           </div>
         </div>
 
-        <!-- 2. Poland Hunter (Hero Card) -->
+        <!-- 3. Poland & Netherlands Hunter (Hero Card) -->
         <div class="hero-card poland-hunter">
           <div>
             <div class="hero-header">
-              <div class="hero-title">2. Poland Internship Hunter — Desktop CRM</div>
-              <span class="hero-badge purple">Desktop Application</span>
+              <div class="hero-title">3. European Internship Hunter CRM</div>
+              <span class="hero-badge purple">Desktop App (PL + NL)</span>
             </div>
             <div class="hero-tech">TypeScript • React • SQLite • Electron • Gemini AI • Nodemailer</div>
             <div class="hero-desc">
-              Full-featured Windows desktop platform automating European curricular internship discovery, candidate fit scoring, and scheduled background career board queries.
+              Windows desktop platform automating Poland & Netherlands internship discovery, candidate fit scoring, financial comparisons, and outreach tracking.
             </div>
             <ul class="hero-bullets">
-              <li><strong>Explainable 5-Factor Scoring:</strong> Algorithmic engine evaluating candidate skills against Polish tech companies, academic dates, and target cities.</li>
-              <li><strong>Multi-Process System Architecture:</strong> Electron desktop shell with IPC isolation between UI and Node.js services; scheduled career board polling with rate-limiting.</li>
-              <li><strong>Local Data Persistence:</strong> Local SQLite relational database with 14-stage Kanban tracking, audit logging, and direct rate-limited Gmail SMTP dispatch.</li>
+              <li><strong>Explainable 5-Factor Scoring:</strong> Evaluates candidate skills against Polish & Dutch tech companies, academic dates, and language requirements.</li>
+              <li><strong>IPCA Financial Calculator:</strong> City-by-city living cost & Erasmus+ grant calculator (PL €600/mo vs NL €650/mo) across 15 cities.</li>
+              <li><strong>Local SQLite CRM:</strong> 14-stage Kanban pipeline, auto-tracking on email dispatch, and rate-limited Gmail SMTP sending.</li>
             </ul>
           </div>
           <div class="hero-link-box">
-            <span>🔗 Source Code & Releases:</span>
-            <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank">github.com/FabioSilva32/poland-internship-hunter ↗</a>
+            <span>🔗 Source:</span>
+            <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank">github.com/FabioSilva32 ↗</a>
           </div>
         </div>
       </div>
@@ -470,8 +502,8 @@ const htmlContent = `<!DOCTYPE html>
     <!-- Footer -->
     <footer class="footer">
       <span>Fábio Júnior Fernandes Silva • IPCA Web Multimedia Development</span>
-      <span>Live Projects: CineLog (PWA) • Poland Hunter (Desktop) • Retiro Interior • StocksVault • ACRIALBI</span>
-      <span>Target Placement: Poland (Feb–Jun 2027)</span>
+      <span>Live Projects: Daymark (Personal OS) • CineLog (PWA) • Internship Hunter (Desktop) • Retiro Interior • StocksVault • ACRIALBI</span>
+      <span>Target Placement: Poland & Netherlands (Feb–Jun 2027)</span>
     </footer>
   </div>
 </body>

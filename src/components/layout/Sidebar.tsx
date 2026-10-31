@@ -43,16 +43,16 @@ export const Sidebar: React.FC = () => {
       <div>
         <div className="p-5 border-b border-slate-800/80 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <span className="text-white font-extrabold text-base tracking-wider">PL</span>
+            <span className="text-white font-extrabold text-xs tracking-wider">PL•NL</span>
           </div>
           <div>
             <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
-              Poland Hunter
+              Internship Hunter
               <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                2027
+                PL & NL
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium">Internship & Outreach OS</p>
+            <p className="text-[11px] text-slate-400 font-medium">Poland & Netherlands OS</p>
           </div>
         </div>
 
@@ -109,7 +109,7 @@ export const Sidebar: React.FC = () => {
           </div>
           <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
             <MapPin className="w-3 h-3 text-purple-400" />
-            <span>Kraków • Warsaw • Gdańsk</span>
+            <span>Poland (PL) • Netherlands (NL)</span>
           </div>
           <div className="pt-1 flex items-center justify-between text-[10px] text-slate-500 border-t border-slate-800/60 font-mono">
             <span>Spring 2027</span>

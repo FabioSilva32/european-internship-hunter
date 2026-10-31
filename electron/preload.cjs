@@ -3,6 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('desktopAPI', {
   // Database & CRM queries
   getDashboardMetrics: () => ipcRenderer.invoke('db:getDashboardMetrics'),
+  getFinancialComparison: (durationMonths) => ipcRenderer.invoke('db:getFinancialComparison', durationMonths),
+  calculateCityFinancialPlan: (params) => ipcRenderer.invoke('db:calculateCityFinancialPlan', params),
   getCompanies: (filters) => ipcRenderer.invoke('db:getCompanies', filters),
   getCompanyDetails: (id) => ipcRenderer.invoke('db:getCompanyDetails', id),
   updateCompanyPriority: (id, priority) => ipcRenderer.invoke('db:updateCompanyPriority', id, priority),

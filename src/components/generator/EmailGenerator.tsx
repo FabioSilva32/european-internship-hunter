@@ -92,6 +92,7 @@ export const EmailGenerator: React.FC = () => {
       .replace(/\bfrom March\b/gi, 'from February')
       .replace(/\bmarço de 2027 até junho\/julho de 2027\b/gi, 'fevereiro de 2027 até junho de 2027')
       .replace(/\bmarço de 2027\b/gi, 'fevereiro de 2027')
+      .replace(/https:\/\/daymark-lynnx\.vercel\.app\/?[^\s\n•)]*/g, 'https://daymark-lynnx.vercel.app')
       .replace(/https:\/\/cinelog-phi\.vercel\.app\/?[^\s\n•)]*/g, 'https://cinelog-phi.vercel.app')
       .replace(/https:\/\/retirointerior\.netlify\.app\/?[^\s\n•)]*/g, 'https://retirointerior.netlify.app')
       .replace(/https:\/\/stocksvault\.netlify\.app\/?[^\s\n•)]*/g, 'https://stocksvault.netlify.app')
@@ -282,18 +283,21 @@ export const EmailGenerator: React.FC = () => {
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
             <Building2 className="w-3.5 h-3.5 text-indigo-400" />
-            Target Polish Company:
+            Target Company (Poland & Netherlands):
           </label>
           <select
             value={selectedCompId}
             onChange={(e) => setSelectedCompId(e.target.value)}
             className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-medium cursor-pointer"
           >
-            {companies.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name} ({c.city} • {c.fit_score}% Fit)
-              </option>
-            ))}
+            {companies.map((c) => {
+              const code = c.country === 'Netherlands' || c.country_code === 'NL' ? 'NL' : 'PL';
+              return (
+                <option key={c.id} value={c.id}>
+                  [{code}] {c.name} ({c.city} • {c.fit_score}% Fit)
+                </option>
+              );
+            })}
           </select>
         </div>
 

@@ -6,6 +6,7 @@ const { calculateFitScore } = require('./services/fitScoreService.cjs');
 const { generateEmail } = require('./services/aiService.cjs');
 const { setGlobalPause, getGlobalPauseState, sendEmail, exportDraftAsEml, testEmailConnection } = require('./services/emailService.cjs');
 const { runCompanyAndInternshipSearch } = require('./services/searchService.cjs');
+const { getFinancialComparisonPayload, calculateCityFinancialPlan } = require('./services/financialService.cjs');
 
 let mainWindow = null;
 let db = null;
@@ -146,12 +147,20 @@ function registerIpcHandlers() {
     const awaitingResponse = db.prepare("SELECT count(*) as count FROM applications WHERE status = 'Email sent'").get().count;
     const upcomingFollowUps = db.prepare("SELECT count(*) as count FROM follow_ups WHERE status = 'pending' AND due_date <= date('now', '+7 days')").get().count;
 
-    // By city
+    // By city & country
     const byCity = db.prepare(`
-      SELECT city, count(*) as count 
+      SELECT city, country, count(*) as count 
       FROM opportunities 
-      GROUP BY city 
+      GROUP BY city, country 
       ORDER BY count DESC
+    `).all();
+
+    // By country
+    const byCountry = db.prepare(`
+      SELECT country, count(*) as count 
+      FROM opportunities 
+      WHERE is_active = 1
+      GROUP BY country
     `).all();
 
     // Pipeline stages
@@ -174,6 +183,7 @@ function registerIpcHandlers() {
       awaitingResponse,
       upcomingFollowUps,
       byCity,
+      byCountry,
       pipeline
     };
   });
@@ -183,6 +193,16 @@ function registerIpcHandlers() {
     let query = 'SELECT * FROM companies WHERE 1=1';
     const params = [];
 
+    if (filters.country && filters.country !== 'All') {
+      if (filters.country === 'PL' || filters.country === 'Poland') {
+        query += " AND (country = 'Poland' OR country_code = 'PL')";
+      } else if (filters.country === 'NL' || filters.country === 'Netherlands') {
+        query += " AND (country = 'Netherlands' OR country_code = 'NL')";
+      } else {
+        query += ' AND country = ?';
+        params.push(filters.country);
+      }
+    }
     if (filters.city && filters.city !== 'All') {
       query += ' AND city LIKE ?';
       params.push(`%${filters.city}%`);
@@ -244,13 +264,23 @@ function registerIpcHandlers() {
   // 3. Opportunities
   ipcMain.handle('db:getOpportunities', async (event, filters = {}) => {
     let query = `
-      SELECT o.*, c.name as company_name, c.website as company_website, c.is_gaming as company_is_gaming, c.priority as company_priority
+      SELECT o.*, c.name as company_name, c.website as company_website, c.is_gaming as company_is_gaming, c.priority as company_priority, c.country as company_country
       FROM opportunities o
       JOIN companies c ON o.company_id = c.id
       WHERE o.is_active = 1
     `;
     const params = [];
 
+    if (filters.country && filters.country !== 'All') {
+      if (filters.country === 'PL' || filters.country === 'Poland') {
+        query += " AND (o.country = 'Poland' OR c.country = 'Poland')";
+      } else if (filters.country === 'NL' || filters.country === 'Netherlands') {
+        query += " AND (o.country = 'Netherlands' OR c.country = 'Netherlands')";
+      } else {
+        query += ' AND o.country = ?';
+        params.push(filters.country);
+      }
+    }
     if (filters.city && filters.city !== 'All') {
       query += ' AND o.city LIKE ?';
       params.push(`%${filters.city}%`);
@@ -285,7 +315,7 @@ function registerIpcHandlers() {
   // 4. Applications Tracker (CRM)
   ipcMain.handle('db:getApplications', async (event, filters = {}) => {
     let query = `
-      SELECT a.*, c.name as company_name, c.website as company_website, c.priority as company_priority,
+      SELECT a.*, c.name as company_name, c.website as company_website, c.priority as company_priority, c.country as company_country,
              ct.name as contact_name, ct.email as contact_email, ct.role as contact_role
       FROM applications a
       JOIN companies c ON a.company_id = c.id
@@ -294,6 +324,16 @@ function registerIpcHandlers() {
     `;
     const params = [];
 
+    if (filters.country && filters.country !== 'All') {
+      if (filters.country === 'PL' || filters.country === 'Poland') {
+        query += " AND (c.country = 'Poland' OR a.country = 'Poland')";
+      } else if (filters.country === 'NL' || filters.country === 'Netherlands') {
+        query += " AND (c.country = 'Netherlands' OR a.country = 'Netherlands')";
+      } else {
+        query += ' AND c.country = ?';
+        params.push(filters.country);
+      }
+    }
     if (filters.status && filters.status !== 'All') {
       query += ' AND a.status = ?';
       params.push(filters.status);
@@ -516,14 +556,23 @@ function registerIpcHandlers() {
   });
 
   // 8. Search Engine
-  ipcMain.handle('search:run', async (event, params) => {
+  ipcMain.handle('search:run', async (event, params = {}) => {
     return await runCompanyAndInternshipSearch({
       db,
+      country: params.country || 'All',
       city: params.city || 'All',
       category: params.category || 'All',
       includeSpeculative: params.includeSpeculative !== false,
       includeOfficial: params.includeOfficial !== false
     });
+  });
+
+  ipcMain.handle('db:getFinancialComparison', async (event, durationMonths = 5) => {
+    return getFinancialComparisonPayload(durationMonths);
+  });
+
+  ipcMain.handle('db:calculateCityFinancialPlan', async (event, params) => {
+    return calculateCityFinancialPlan(params || {});
   });
 
   ipcMain.handle('search:getLastRun', async () => {

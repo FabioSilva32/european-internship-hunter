@@ -36,6 +36,7 @@ export interface Company {
   careers_url: string;
   city: string;
   country: string;
+  country_code?: string;
   description: string;
   industry: string;
   is_gaming: number;
@@ -65,6 +66,8 @@ export interface Opportunity {
   description: string;
   city: string;
   country: string;
+  country_code?: string;
+  company_country?: string;
   category: string;
   work_arrangement: 'On-site' | 'Hybrid' | 'Remote';
   is_official_vacancy: number; // 1 = Official Vacancy, 0 = Speculative
@@ -112,6 +115,8 @@ export interface Application {
   priority: Priority;
   target_role: string;
   city: string;
+  country?: string;
+  company_country?: string;
   date_contacted?: string;
   next_follow_up_date?: string;
   follow_up_count: number;
@@ -212,7 +217,8 @@ export interface DashboardMetrics {
   rejectionsCount: number;
   awaitingResponse: number;
   upcomingFollowUps: number;
-  byCity: { city: string; count: number }[];
+  byCity: { city: string; country?: string; count: number }[];
+  byCountry?: { country: string; count: number }[];
   pipeline: { status: string; count: number }[];
 }
 
