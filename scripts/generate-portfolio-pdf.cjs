@@ -378,8 +378,8 @@ const htmlContent = `<!DOCTYPE html>
               All-in-one Personal Operating System & Command Centre uniting 22 modular workspaces into a fast, offline-first PWA, Windows desktop app, and Android APK.
             </div>
             <ul class="hero-bullets">
-              <li><strong>22 Integrated Modules:</strong> Kanban Tasks, Eisenhower Matrix, Pomodoro Timer, Habit Heatmaps, Flashcards, Grade Calculator, Finance Tracker & Dev Snippets.</li>
-              <li><strong>Cloud + Local Hybrid Sync:</strong> Supabase PostgreSQL with Row-Level Security (RLS), Google OAuth, and full offline localStorage fallback.</li>
+              <li><strong>22 Integrated Modules:</strong> Tasks, Calendar, Habits, Notes, Focus Timer, Fitness & Workouts, Nutrition & Hydration, Live Weather, Finance, Meal Planner & AI Assistant.</li>
+              <li><strong>Cloud + Local Hybrid Sync:</strong> Supabase PostgreSQL with Row-Level Security (RLS) and full local-first offline resilience.</li>
               <li><strong>Multi-Platform Delivery:</strong> Deployed on Vercel with Electron desktop packaging and Capacitor Android APK builds.</li>
             </ul>
           </div>
@@ -389,20 +389,20 @@ const htmlContent = `<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- 3. Poland & Netherlands Hunter (Hero Card) -->
+        <!-- 3. European Internship Hunter (Hero Card - 11 Countries) -->
         <div class="hero-card poland-hunter">
           <div>
             <div class="hero-header">
               <div class="hero-title">3. European Internship Hunter CRM</div>
-              <span class="hero-badge purple">Desktop App (PL + NL)</span>
+              <span class="hero-badge purple">Desktop App (11 Countries)</span>
             </div>
             <div class="hero-tech">TypeScript • React • SQLite • Electron • Gemini AI • Nodemailer</div>
             <div class="hero-desc">
-              Windows desktop platform automating Poland & Netherlands internship discovery, candidate fit scoring, university dorm & living cost comparisons, and outreach tracking.
+              Windows desktop platform automating internship discovery across 11 European countries (PL, HR, HU, EE, BG, RS, SI, SK, CZ, NO, DK), fit scoring, university dorm comparisons, and outreach CRM.
             </div>
             <ul class="hero-bullets">
-              <li><strong>Explainable 5-Factor Scoring:</strong> Evaluates candidate skills against Polish & Dutch tech companies, academic dates, and language requirements.</li>
-              <li><strong>IPCA & University Dorm Calculator:</strong> Compares PL (€600/mo) & NL (€650/mo) grants + nearest university dormitories across 15 cities.</li>
+              <li><strong>Explainable 5-Factor Scoring:</strong> Evaluates candidate skills against 54 verified European software houses, digital agencies, and studios.</li>
+              <li><strong>IPCA & University Dorm Calculator:</strong> Compares Group 1 (€650), Group 2 (€600) & Group 3 (€550/mo) grants + nearest university dormitories across 21 cities.</li>
               <li><strong>Local SQLite CRM:</strong> 14-stage Kanban pipeline, auto-tracking on email dispatch, and rate-limited Gmail SMTP sending.</li>
             </ul>
           </div>

@@ -356,15 +356,15 @@ const CV_TEMPLATES = [
             <div class="proj-title">Daymark ("The Everything App") — Personal Operating System & Command Centre PWA</div>
             <div class="proj-tech">Next.js 15 • React 19 • TypeScript • Supabase PostgreSQL • Electron & Android APK • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
             <div class="proj-desc">
-              Architected an all-in-one Personal OS uniting 22 productivity, academic, finance, and developer modules (Kanban tasks, Eisenhower matrix, Pomodoro, habits, flashcards, expenses) with Supabase RLS sync and offline PWA/Desktop/Android builds.
+              Architected an all-in-one Personal OS uniting 22 daily modules (Tasks, Calendar, Habits, Notes, Pomodoro Focus, Fitness & Workouts, Nutrition & Hydration, Live Weather, Personal Finance, Meal Planner & AI Assistant) with local-first + Supabase RLS sync and PWA/Desktop/Android APK builds.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">European Internship Hunter & Outreach CRM (Poland & Netherlands)</div>
+            <div class="proj-title">European Internship Hunter & Outreach CRM (11 European Countries)</div>
             <div class="proj-tech">TypeScript • React • Tailwind CSS • SQLite • Electron • <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32/poland-internship-hunter</a></div>
             <div class="proj-desc">
-              Automated desktop CRM & outreach platform supporting Poland & the Netherlands with 5-factor fit scoring, IPCA scholarship & living-cost financial calculator, local SQLite persistence, and direct SMTP dispatch.
+              Automated desktop CRM & outreach platform supporting 11 European countries (PL, HR, HU, EE, BG, RS, SI, SK, CZ, NO, DK) with 5-factor fit scoring, IPCA Group 1/2/3 scholarship & university dorm calculator, local SQLite persistence, and direct SMTP dispatch.
             </div>
           </div>
 
@@ -555,18 +555,18 @@ const CV_TEMPLATES = [
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">Daymark ("The Everything App") — Multi-Theme Design System & Personal OS</div>
-            <div class="proj-tech">Design Tokens • 22 Interactive Modules • Next.js 15 / React 19 • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
+            <div class="proj-title">Daymark ("The Everything App") — High-Contrast Dark UI System & Personal OS</div>
+            <div class="proj-tech">Solid Dark Design Tokens • 22 Interactive Modules • Next.js 15 / React 19 • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
             <div class="proj-desc">
-              Designed a cohesive multi-theme UI system (Light, Dark, Midnight, Sunset, Forest) powering 22 modular workspaces including drag-and-drop Kanban boards, Pomodoro focus rings, habit heatmaps, and command-palette UX.
+              Designed a cohesive zero-gradient dark UI system (#0B0D10 / #E50914) powering 22 modular workspaces including Tasks, Calendar, Habits, Fitness & Nutrition trackers, Live Weather, Personal Finance, and Command Search UX.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">European Internship Hunter — Design System & UI Architecture</div>
+            <div class="proj-title">European Internship Hunter — Design System & UI Architecture (11 Countries)</div>
             <div class="proj-tech">Figma • Design Tokens • Dark Mode UI • Tailwind CSS • <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32/poland-internship-hunter</a></div>
             <div class="proj-desc">
-              Designed a high-density desktop interface system supporting Poland & Netherlands internship search, interactive financial comparison calculators, pipeline Kanban boards, and modal micro-interactions.
+              Designed a high-density desktop interface system supporting internship search across 11 European countries, interactive IPCA scholarship & university dorm calculators, 14-stage Kanban CRM boards, and modal micro-interactions.
             </div>
           </div>
 
@@ -759,15 +759,15 @@ const CV_TEMPLATES = [
             <div class="proj-title">Daymark ("The Everything App") — Cross-Platform & Offline Sync Verification</div>
             <div class="proj-tech">PWA / Electron / Android APK Testing • Supabase RLS • <a href="https://daymark-lynnx.vercel.app" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">daymark-lynnx.vercel.app</a></div>
             <div class="proj-desc">
-              Executed functional and regression verification across 22 integrated modules, testing offline-to-online state reconciliation, row-level security policies, and cross-platform parity across Web, Windows Electron, and Android APK builds.
+              Executed functional and regression verification across 22 integrated modules (Tasks, Fitness, Nutrition, Finance, Weather, Calendar), testing offline-to-online state reconciliation, row-level security policies, and cross-platform parity across Web, Windows Electron, and Android APK builds.
             </div>
           </div>
 
           <div class="proj-item">
-            <div class="proj-title">End-to-End Application Testing Matrix — European Internship Hunter</div>
+            <div class="proj-title">End-to-End Application Testing Matrix — European Internship Hunter (11 Countries)</div>
             <div class="proj-tech">Black-Box Testing • Edge Case Validation • Process Isolation • SQLite • <a href="https://github.com/FabioSilva32/poland-internship-hunter" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;">github.com/FabioSilva32/poland-internship-hunter</a></div>
             <div class="proj-desc">
-              Designed and executed manual & automated test suites validating SQLite migrations, multi-country filtering (PL & NL), financial calculator formulas, rate-limiting boundaries, and IPC message handling.
+              Designed and executed manual & automated test suites validating SQLite migrations, multi-country filtering across 11 European nations, IPCA Group 1/2/3 financial & university dorm calculator formulas, rate-limiting boundaries, and IPC message handling.
             </div>
           </div>
 
