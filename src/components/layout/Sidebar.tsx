@@ -43,16 +43,16 @@ export const Sidebar: React.FC = () => {
       <div>
         <div className="p-5 border-b border-slate-800/80 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <span className="text-white font-extrabold text-xs tracking-wider">PL•NL</span>
+            <span className="text-white font-extrabold text-xs tracking-wider">PL+10</span>
           </div>
           <div>
             <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
               Internship Hunter
               <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                PL & NL
+                11 EU
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium">Poland & Netherlands OS</p>
+            <p className="text-[11px] text-slate-400 font-medium">Poland + 10 EU Countries</p>
           </div>
         </div>
 
@@ -108,11 +108,11 @@ export const Sidebar: React.FC = () => {
             <span className="truncate">IPCA • Web Multimedia</span>
           </div>
           <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
-            <MapPin className="w-3 h-3 text-purple-400" />
-            <span>Poland (PL) • Netherlands (NL)</span>
+            <MapPin className="w-3 h-3 text-purple-400 shrink-0" />
+            <span className="truncate">PL • HR • HU • EE • BG • RS • SI • SK • CZ • NO • DK</span>
           </div>
           <div className="pt-1 flex items-center justify-between text-[10px] text-slate-500 border-t border-slate-800/60 font-mono">
-            <span>Spring 2027</span>
+            <span>By 30 Nov 2026</span>
             <span className="text-emerald-400 font-semibold">● SQLite Ready</span>
           </div>
         </div>

@@ -134,10 +134,10 @@ app.on('window-all-closed', () => {
 function registerIpcHandlers() {
   // 1. Dashboard Metrics
   ipcMain.handle('db:getDashboardMetrics', async () => {
-    const totalCompanies = db.prepare('SELECT count(*) as count FROM companies').get().count;
-    const worthContacting = db.prepare("SELECT count(*) as count FROM companies WHERE priority IN ('High', 'Medium') AND opt_out = 0").get().count;
-    const totalOpportunities = db.prepare('SELECT count(*) as count FROM opportunities WHERE is_active = 1').get().count;
-    const dateMatches = db.prepare("SELECT count(*) as count FROM opportunities WHERE (internship_start LIKE '%2027-02%' OR internship_start LIKE '%2027-03%')").get().count;
+    const totalCompanies = db.prepare("SELECT count(*) as count FROM companies WHERE country != 'Netherlands'").get().count;
+    const worthContacting = db.prepare("SELECT count(*) as count FROM companies WHERE priority IN ('High', 'Medium') AND opt_out = 0 AND country != 'Netherlands'").get().count;
+    const totalOpportunities = db.prepare("SELECT count(*) as count FROM opportunities WHERE is_active = 1 AND country != 'Netherlands'").get().count;
+    const dateMatches = db.prepare("SELECT count(*) as count FROM opportunities WHERE is_active = 1 AND country != 'Netherlands' AND (internship_start LIKE '%2027-02%' OR internship_start LIKE '%2027-03%')").get().count;
     
     const draftsCount = db.prepare("SELECT count(*) as count FROM email_drafts WHERE status IN ('draft', 'approved')").get().count;
     const sentCount = db.prepare("SELECT count(*) as count FROM email_messages WHERE direction = 'outgoing'").get().count;
@@ -151,6 +151,7 @@ function registerIpcHandlers() {
     const byCity = db.prepare(`
       SELECT city, country, count(*) as count 
       FROM opportunities 
+      WHERE is_active = 1 AND country != 'Netherlands'
       GROUP BY city, country 
       ORDER BY count DESC
     `).all();
@@ -159,8 +160,9 @@ function registerIpcHandlers() {
     const byCountry = db.prepare(`
       SELECT country, count(*) as count 
       FROM opportunities 
-      WHERE is_active = 1
+      WHERE is_active = 1 AND country != 'Netherlands'
       GROUP BY country
+      ORDER BY count DESC
     `).all();
 
     // Pipeline stages
@@ -190,17 +192,15 @@ function registerIpcHandlers() {
 
   // 2. Companies
   ipcMain.handle('db:getCompanies', async (event, filters = {}) => {
-    let query = 'SELECT * FROM companies WHERE 1=1';
+    let query = "SELECT * FROM companies WHERE country != 'Netherlands'";
     const params = [];
 
     if (filters.country && filters.country !== 'All') {
       if (filters.country === 'PL' || filters.country === 'Poland') {
         query += " AND (country = 'Poland' OR country_code = 'PL')";
-      } else if (filters.country === 'NL' || filters.country === 'Netherlands') {
-        query += " AND (country = 'Netherlands' OR country_code = 'NL')";
       } else {
-        query += ' AND country = ?';
-        params.push(filters.country);
+        query += ' AND (country = ? OR country_code = ?)';
+        params.push(filters.country, filters.country);
       }
     }
     if (filters.city && filters.city !== 'All') {
@@ -215,8 +215,8 @@ function registerIpcHandlers() {
       query += ' AND is_gaming = 1';
     }
     if (filters.search) {
-      query += ' AND (name LIKE ? OR description LIKE ? OR technologies LIKE ?)';
-      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+      query += ' AND (name LIKE ? OR description LIKE ? OR technologies LIKE ? OR city LIKE ? OR country LIKE ?)';
+      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
     }
 
     query += ' ORDER BY fit_score DESC, name ASC';
@@ -264,21 +264,19 @@ function registerIpcHandlers() {
   // 3. Opportunities
   ipcMain.handle('db:getOpportunities', async (event, filters = {}) => {
     let query = `
-      SELECT o.*, c.name as company_name, c.website as company_website, c.is_gaming as company_is_gaming, c.priority as company_priority, c.country as company_country
+      SELECT o.*, c.name as company_name, c.website as company_website, c.is_gaming as company_is_gaming, c.priority as company_priority, c.country as company_country, c.country_code as company_country_code
       FROM opportunities o
       JOIN companies c ON o.company_id = c.id
-      WHERE o.is_active = 1
+      WHERE o.is_active = 1 AND o.country != 'Netherlands' AND c.country != 'Netherlands'
     `;
     const params = [];
 
     if (filters.country && filters.country !== 'All') {
       if (filters.country === 'PL' || filters.country === 'Poland') {
-        query += " AND (o.country = 'Poland' OR c.country = 'Poland')";
-      } else if (filters.country === 'NL' || filters.country === 'Netherlands') {
-        query += " AND (o.country = 'Netherlands' OR c.country = 'Netherlands')";
+        query += " AND (o.country = 'Poland' OR c.country = 'Poland' OR o.country_code = 'PL')";
       } else {
-        query += ' AND o.country = ?';
-        params.push(filters.country);
+        query += ' AND (o.country = ? OR c.country = ? OR o.country_code = ?)';
+        params.push(filters.country, filters.country, filters.country);
       }
     }
     if (filters.city && filters.city !== 'All') {
@@ -299,8 +297,8 @@ function registerIpcHandlers() {
       query += " AND (o.internship_start LIKE '%2027-02%' OR o.internship_start LIKE '%2027-03%')";
     }
     if (filters.search) {
-      query += ' AND (o.title LIKE ? OR c.name LIKE ? OR o.description LIKE ?)';
-      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+      query += ' AND (o.title LIKE ? OR c.name LIKE ? OR o.description LIKE ? OR o.city LIKE ? OR o.country LIKE ?)';
+      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
     }
 
     query += ' ORDER BY o.fit_score DESC, o.created_at DESC';
@@ -315,7 +313,7 @@ function registerIpcHandlers() {
   // 4. Applications Tracker (CRM)
   ipcMain.handle('db:getApplications', async (event, filters = {}) => {
     let query = `
-      SELECT a.*, c.name as company_name, c.website as company_website, c.priority as company_priority, c.country as company_country,
+      SELECT a.*, c.name as company_name, c.website as company_website, c.priority as company_priority, c.country as company_country, c.country_code as company_country_code,
              ct.name as contact_name, ct.email as contact_email, ct.role as contact_role
       FROM applications a
       JOIN companies c ON a.company_id = c.id
@@ -326,12 +324,10 @@ function registerIpcHandlers() {
 
     if (filters.country && filters.country !== 'All') {
       if (filters.country === 'PL' || filters.country === 'Poland') {
-        query += " AND (c.country = 'Poland' OR a.country = 'Poland')";
-      } else if (filters.country === 'NL' || filters.country === 'Netherlands') {
-        query += " AND (c.country = 'Netherlands' OR a.country = 'Netherlands')";
+        query += " AND (c.country = 'Poland' OR a.country = 'Poland' OR c.country_code = 'PL')";
       } else {
-        query += ' AND c.country = ?';
-        params.push(filters.country);
+        query += ' AND (c.country = ? OR a.country = ? OR c.country_code = ?)';
+        params.push(filters.country, filters.country, filters.country);
       }
     }
     if (filters.status && filters.status !== 'All') {
@@ -339,8 +335,8 @@ function registerIpcHandlers() {
       params.push(filters.status);
     }
     if (filters.search) {
-      query += ' AND (c.name LIKE ? OR a.target_role LIKE ? OR a.city LIKE ?)';
-      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+      query += ' AND (c.name LIKE ? OR a.target_role LIKE ? OR a.city LIKE ? OR c.country LIKE ?)';
+      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
     }
 
     query += ' ORDER BY a.last_activity_at DESC';
@@ -357,15 +353,17 @@ function registerIpcHandlers() {
 
   ipcMain.handle('db:createApplication', async (event, data) => {
     const id = data.id || 'app-' + Date.now();
+    const compRow = data.company_id ? db.prepare('SELECT country FROM companies WHERE id = ?').get(data.company_id) : null;
+    const countryVal = data.country || compRow?.country || 'Poland';
     db.prepare(`
       INSERT INTO applications (
         id, company_id, opportunity_id, contact_id, status, priority,
-        target_role, city, notes, source
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        target_role, city, country, notes, source
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       id, data.company_id, data.opportunity_id || null, data.contact_id || null,
       data.status || 'Ready to contact', data.priority || 'High',
-      data.target_role, data.city, data.notes || '', data.source || 'Direct Discovery'
+      data.target_role, data.city, countryVal, data.notes || '', data.source || 'Direct Discovery'
     );
     return { success: true, id };
   });

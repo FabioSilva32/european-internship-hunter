@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useApp, SupportedCountryFilter } from '../../context/AppContext';
 import {
   IPCA_SCHOLARSHIP_CONFIG,
   POLISH_CITIES,
-  DUTCH_CITIES,
+  SUPPORTED_COUNTRIES_LIST,
   calculateCityFinancials,
+  getCountryMeta,
 } from '../../data/financialComparisonData';
 import {
   Building2,
@@ -26,6 +27,7 @@ import {
   GraduationCap,
   Home,
   ExternalLink,
+  Clock,
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
@@ -33,21 +35,21 @@ export const Dashboard: React.FC = () => {
 
   // Interactive Financial Comparison Calculator State
   const [plCity, setPlCity] = useState<string>('Kraków');
-  const [nlCity, setNlCity] = useState<string>('Rotterdam');
+  const [compareCity, setCompareCity] = useState<string>('Zagreb');
   const [durationMonths, setDurationMonths] = useState<number>(5);
   const [housingMode, setHousingMode] = useState<'dorm' | 'private'>('dorm');
   const [plEmployerComp, setPlEmployerComp] = useState<number>(0);
-  const [nlEmployerComp, setNlEmployerComp] = useState<number>(0);
-  const [cityHubFilter, setCityHubFilter] = useState<'ALL' | 'PL' | 'NL'>('ALL');
+  const [compareEmployerComp, setCompareEmployerComp] = useState<number>(0);
+  const [groupHubFilter, setGroupHubFilter] = useState<'ALL' | 'G1' | 'G2' | 'G3'>('ALL');
 
   const plPlan = calculateCityFinancials(plCity, durationMonths, plEmployerComp, housingMode);
-  const nlPlan = calculateCityFinancials(nlCity, durationMonths, nlEmployerComp, housingMode);
+  const comparePlan = calculateCityFinancials(compareCity, durationMonths, compareEmployerComp, housingMode);
 
   const kpis = [
     {
       title: 'Companies Discovered',
       value: metrics?.totalCompanies || 0,
-      sub: `${metrics?.worthContacting || 0} worth contacting (PL & NL)`,
+      sub: `${metrics?.worthContacting || 0} worth contacting (11 Countries)`,
       icon: Building2,
       color: 'from-blue-500/20 to-indigo-500/10 border-blue-500/30 text-blue-400',
     },
@@ -61,7 +63,7 @@ export const Dashboard: React.FC = () => {
     {
       title: 'Date-Compatible (2027)',
       value: metrics?.dateMatches || 0,
-      sub: 'Feb–June 2027 window',
+      sub: 'Feb–Jun/Jul 2027 window',
       icon: Calendar,
       color: 'from-purple-500/20 to-pink-500/10 border-purple-500/30 text-purple-400',
     },
@@ -82,61 +84,54 @@ export const Dashboard: React.FC = () => {
     {
       title: 'Interviews Scheduled',
       value: metrics?.interviewsCount || 0,
-      sub: `${metrics?.rejectionsCount || 0} rejections processed`,
+      sub: 'Target Deadline: 30 Nov 2026',
       icon: Users,
       color: 'from-amber-500/20 to-orange-500/10 border-amber-500/30 text-amber-400',
     },
   ];
 
-  const cityHubs = [
-    { city: 'Kraków', country: 'PL', count: 8, percentage: 85, tag: 'PL #1 Hub (€600/mo Group 2)' },
-    { city: 'Warsaw', country: 'PL', count: 7, percentage: 75, tag: 'PL Capital Tech & Gaming' },
-    { city: 'Amsterdam', country: 'NL', count: 4, percentage: 65, tag: 'NL Digital & Creative Hub (€650/mo Group 1)' },
-    { city: 'Rotterdam / Delft', country: 'NL', count: 3, percentage: 55, tag: 'NL Agency & VR Hub (€650/mo Group 1)' },
-    { city: 'Utrecht / Eindhoven', country: 'NL', count: 3, percentage: 55, tag: 'NL Interactive & Brainport Tech' },
-    { city: 'Gdańsk / Wrocław / Poznań', country: 'PL', count: 5, percentage: 60, tag: 'PL Software & UX Consultancies' },
-    { city: 'The Hague / Groningen / Breda', country: 'NL', count: 4, percentage: 50, tag: 'NL Affordable Tech Cities' },
-  ].filter((h) => (cityHubFilter === 'ALL' ? true : h.country === cityHubFilter));
+  const countryHubs = [
+    { city: 'Kraków & Warsaw', country: 'Poland', code: 'PL', group: 'G3', percentage: 92, tag: 'Group 3 (€550/mo) • Dorms ~€150/mo' },
+    { city: 'Zagreb & Split', country: 'Croatia', code: 'HR', group: 'G3', percentage: 85, tag: 'Group 3 (€550/mo) • Infinum, Q, Cinnamon' },
+    { city: 'Prague & Brno', country: 'Czechia', code: 'CZ', group: 'G2', percentage: 88, tag: 'Group 2 (€600/mo) • STRV, Ackee, OAK’S LAB' },
+    { city: 'Copenhagen', country: 'Denmark', code: 'DK', group: 'G1', percentage: 80, tag: 'Group 1 (€650/mo) • Signifly, Abtion' },
+    { city: 'Tallinn & Tartu', country: 'Estonia', code: 'EE', group: 'G2', percentage: 82, tag: 'Group 2 (€600/mo) • Helmes, Bitweb, Mooncascade' },
+    { city: 'Ljubljana', country: 'Slovenia', code: 'SI', group: 'G2', percentage: 80, tag: 'Group 2 (€600/mo) • Povio, Agiledrop, Kaldi' },
+    { city: 'Bratislava', country: 'Slovakia', code: 'SK', group: 'G2', percentage: 78, tag: 'Group 2 (€600/mo) • GoodRequest, Vacuumlabs' },
+    { city: 'Budapest', country: 'Hungary', code: 'HU', group: 'G3', percentage: 78, tag: 'Group 3 (€550/mo) • UX studio, Supercharge' },
+    { city: 'Sofia', country: 'Bulgaria', code: 'BG', group: 'G3', percentage: 76, tag: 'Group 3 (€550/mo) • MentorMate, Despark' },
+    { city: 'Novi Sad & Belgrade', country: 'Serbia', code: 'RS', group: 'G3', percentage: 76, tag: 'Group 3 (€550/mo) • Vega IT, HTEC, Vivify' },
+    { city: 'Oslo', country: 'Norway', code: 'NO', group: 'G1', percentage: 72, tag: 'Group 1 (€650/mo) • KodeWorks, Bleed, Sanity' },
+  ].filter((h) => (groupHubFilter === 'ALL' ? true : h.group === groupHubFilter));
 
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       {/* Hero Action Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/60 to-purple-950/40 border border-indigo-500/20 p-6 shadow-xl">
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-1.5 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              <span>IPCA Curricular Internship Campaign 2027 • Poland (PL) & Netherlands (NL)</span>
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/60 to-purple-950/40 border border-indigo-500/20 p-6 shadow-xl space-y-4">
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="space-y-1.5 max-w-3xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                <span>IPCA Curricular Internship 2027 • 11 Supported European Countries</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold">
+                <Clock className="w-3.5 h-3.5 text-amber-400" />
+                <span>Placement Goal: Secure by 30 November 2026</span>
+              </div>
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              Poland & Netherlands Tech, Digital Agency & Gaming Pipeline
+              Poland + 10 European Countries Web, UI/UX & Software House Pipeline
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Targeting software engineering hubs, digital agencies, and studios across{' '}
-              <strong className="text-indigo-200">Poland (Kraków, Warsaw, Gdańsk, Wrocław)</strong> and{' '}
-              <strong className="text-orange-200">the Netherlands (Amsterdam, Rotterdam, Utrecht, Eindhoven, Delft, Breda)</strong>{' '}
-              for a 4–5 month placement (February – June/July 2027) in Web Development, Frontend/Backend, UI/UX, Multimedia, and Game QA.
+              Targeting English-speaking SME software houses, digital product agencies, and studios across{' '}
+              <strong className="text-amber-300">Group 1 (€650/mo: Norway, Denmark)</strong>,{' '}
+              <strong className="text-cyan-300">Group 2 (€600/mo: Estonia, Slovenia, Slovakia, Czechia)</strong>, and{' '}
+              <strong className="text-indigo-200">Group 3 (€550/mo: Poland, Croatia, Hungary, Bulgaria, Serbia)</strong>{' '}
+              for a 4–5 month placement (February/March – June/July 2027).
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              onClick={() => {
-                setSelectedCountry('Poland');
-                setActiveTab('discovery');
-              }}
-              className="px-3.5 py-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-200 text-xs font-bold transition"
-            >
-              PL Opportunities
-            </button>
-            <button
-              onClick={() => {
-                setSelectedCountry('Netherlands');
-                setActiveTab('discovery');
-              }}
-              className="px-3.5 py-2 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-200 text-xs font-bold transition"
-            >
-              NL Opportunities
-            </button>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={() => {
                 setSelectedCountry('All');
@@ -156,6 +151,41 @@ export const Dashboard: React.FC = () => {
               <span>Draft Outreach</span>
             </button>
           </div>
+        </div>
+
+        {/* 1-Click Country Filter Pills across all 11 supported countries */}
+        <div className="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-1.5">
+          <span className="text-[11px] font-semibold text-slate-400 mr-1">Quick Filter by Country:</span>
+          <button
+            onClick={() => {
+              setSelectedCountry('All');
+              setActiveTab('discovery');
+            }}
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
+              selectedCountry === 'All'
+                ? 'bg-indigo-600 text-white border-indigo-500'
+                : 'bg-slate-800/70 text-slate-300 border-slate-700 hover:text-white'
+            }`}
+          >
+            All 11 Countries
+          </button>
+          {SUPPORTED_COUNTRIES_LIST.map((c) => (
+            <button
+              key={c.countryCode}
+              onClick={() => {
+                setSelectedCountry(c.country as SupportedCountryFilter);
+                setActiveTab('discovery');
+              }}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
+                selectedCountry === c.country
+                  ? 'bg-indigo-600 text-white border-indigo-500'
+                  : `${c.badgeColor} hover:brightness-125`
+              }`}
+              title={`${c.country} (${c.group} — €${c.monthlyRateEur}/month)`}
+            >
+              {c.countryCode} • {c.country} (€{c.monthlyRateEur})
+            </button>
+          ))}
         </div>
       </div>
 
@@ -187,7 +217,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-indigo-400" />
-                Application Pipeline Progress (Poland & Netherlands)
+                Application Pipeline Progress (11 Supported European Countries)
               </h3>
               <p className="text-xs text-slate-400">Current status distribution across companies and positions</p>
             </div>
@@ -218,35 +248,63 @@ export const Dashboard: React.FC = () => {
             ))}
           </div>
 
+          {/* IPCA Scholarship Rate Summary Table */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+            <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
+              <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+                <span>IPCA Group 1</span>
+                <span className="font-mono text-sm">€650 / mo</span>
+              </div>
+              <p className="text-[11px] text-slate-300">Norway (NO), Denmark (DK)</p>
+              <p className="text-[10px] text-slate-400">5-Month Grant: €3,250</p>
+            </div>
+            <div className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
+              <div className="flex items-center justify-between text-xs font-bold text-cyan-300">
+                <span>IPCA Group 2</span>
+                <span className="font-mono text-sm">€600 / mo</span>
+              </div>
+              <p className="text-[11px] text-slate-300">Estonia (EE), Slovenia (SI), Slovakia (SK), Czechia (CZ)</p>
+              <p className="text-[10px] text-slate-400">5-Month Grant: €3,000</p>
+            </div>
+            <div className="p-3 rounded-xl bg-indigo-950/30 border border-indigo-500/30 space-y-1">
+              <div className="flex items-center justify-between text-xs font-bold text-indigo-300">
+                <span>IPCA Group 3</span>
+                <span className="font-mono text-sm">€550 / mo</span>
+              </div>
+              <p className="text-[11px] text-slate-300">Croatia (HR), Hungary (HU), Bulgaria (BG), Serbia (RS), Poland (PL)</p>
+              <p className="text-[10px] text-slate-400">5-Month Grant: €2,750</p>
+            </div>
+          </div>
+
           {/* Safety & Responsible Automation Guarantee Box */}
           <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800/80 flex items-start gap-3 text-xs text-slate-300">
             <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <span className="font-semibold text-slate-200">Responsible Automation Safeguards Active</span>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Manual approval required for all outgoing drafts. Daily send limit enforced (max 20 emails/day). Duplicate contact prevention, English-by-default outreach, and verified versus speculative labeling active across both Poland and the Netherlands.
+                Manual approval required for all outgoing drafts. Daily send limit enforced (max 20 emails/day). Duplicate contact prevention, English-by-default outreach, and verified versus speculative labeling active across all 11 countries.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Opportunities by Polish & Dutch Cities */}
+        {/* Target Hubs across 11 Countries */}
         <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-purple-400" />
-                Target Hubs (PL & NL)
+                Target Hubs (11 Countries)
               </h3>
-              <p className="text-xs text-slate-400">Opportunity density by city</p>
+              <p className="text-xs text-slate-400">By IPCA Scholarship Group</p>
             </div>
             <div className="flex items-center rounded-lg bg-slate-800 p-0.5 border border-slate-700 text-[10px] font-bold">
-              {(['ALL', 'PL', 'NL'] as const).map((tab) => (
+              {(['ALL', 'G1', 'G2', 'G3'] as const).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setCityHubFilter(tab)}
+                  onClick={() => setGroupHubFilter(tab)}
                   className={`px-2 py-0.5 rounded transition ${
-                    cityHubFilter === tab ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    groupHubFilter === tab ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   {tab}
@@ -255,52 +313,58 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="space-y-2.5 pt-1">
-            {cityHubs.map((loc, i) => (
-              <div key={i} className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5 font-semibold text-slate-200">
-                    <span
-                      className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${
-                        loc.country === 'NL'
-                          ? 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
-                          : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                      }`}
-                    >
-                      {loc.country}
-                    </span>
-                    <span>{loc.city}</span>
+          <div className="space-y-2.5 pt-1 max-h-72 overflow-y-auto pr-1">
+            {countryHubs.map((loc, i) => {
+              const meta = getCountryMeta(loc.country);
+              return (
+                <div
+                  key={i}
+                  onClick={() => {
+                    setSelectedCountry(loc.country as SupportedCountryFilter);
+                    setActiveTab('discovery');
+                  }}
+                  className="space-y-1 cursor-pointer group"
+                >
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 font-semibold text-slate-200 group-hover:text-indigo-300 transition">
+                      <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold border ${meta.badgeColor}`}>
+                        {loc.code}
+                      </span>
+                      <span>{loc.city}</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 truncate max-w-[175px]">{loc.tag}</span>
                   </div>
-                  <span className="text-[10px] text-slate-400 truncate max-w-[165px]">{loc.tag}</span>
+                  <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${
+                        loc.group === 'G1'
+                          ? 'bg-gradient-to-r from-amber-500 to-rose-400'
+                          : loc.group === 'G2'
+                          ? 'bg-gradient-to-r from-cyan-500 to-emerald-400'
+                          : 'bg-gradient-to-r from-indigo-500 to-purple-500'
+                      }`}
+                      style={{ width: `${loc.percentage}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${
-                      loc.country === 'NL'
-                        ? 'bg-gradient-to-r from-orange-500 to-amber-400'
-                        : 'bg-gradient-to-r from-indigo-500 to-purple-500'
-                    }`}
-                    style={{ width: `${loc.percentage}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-800/30 text-purple-300 text-[11px] leading-relaxed">
-            💡 <strong>PL & NL Strategy:</strong> Kraków & Warsaw offer lower student living costs with high tech/gaming density, while Rotterdam, Utrecht, Eindhoven & Amsterdam offer world-class digital agencies and Group 1 (€650/mo) IPCA scholarship support.
+            💡 <strong>11-Country Strategy:</strong> Group 2 (`EE, SI, SK, CZ` — €600/mo) and Group 3 (`PL, HR, HU, BG, RS` — €550/mo) have university dormitories at <strong>€95–€165/mo</strong>, making it possible to cover nearly 100% of your living expenses from the IPCA grant alone!
           </div>
         </div>
       </div>
 
-      {/* IPCA Scholarship & Financial Comparison Calculator (Poland vs. Netherlands) */}
+      {/* IPCA Scholarship & Financial Comparison Calculator (Poland vs. Any Supported Country) */}
       <div className="p-5 rounded-2xl bg-slate-900/75 border border-slate-800 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-800/80 pb-3.5">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Wallet className="w-4 h-4 text-emerald-400" />
-                IPCA Scholarship & Living Cost Comparison: Poland (PL) vs. Netherlands (NL)
+                IPCA Scholarship & Living Cost Comparison Across All 11 Countries
               </h3>
               <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
                 Source: {IPCA_SCHOLARSHIP_CONFIG.sourceLabel}
@@ -311,14 +375,13 @@ export const Dashboard: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Compare city-specific living expenses, IPCA Erasmus+ mobility grant rates (<strong>Poland Group 2: €600/mo</strong> vs.{' '}
-              <strong>Netherlands Group 1: €650/mo</strong>), employer compensation, and personal contribution for an ~{durationMonths}-month placement.
+              Compare <strong>Group 1 (€650/mo: NO, DK)</strong>, <strong>Group 2 (€600/mo: EE, SI, SK, CZ)</strong>, and{' '}
+              <strong>Group 3 (€550/mo: HR, HU, BG, RS, PL)</strong> with university dormitories vs. private rooms for an ~{durationMonths}-month placement.
             </p>
           </div>
 
           {/* Housing Mode & Duration Selector */}
           <div className="flex flex-wrap items-center gap-3 shrink-0">
-            {/* Housing Mode Toggle: University Dorm vs Private Room/Airbnb */}
             <div className="flex items-center rounded-xl bg-slate-950 p-1 border border-slate-800 text-xs font-bold">
               <button
                 onClick={() => setHousingMode('dorm')}
@@ -365,7 +428,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Comparison Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* POLAND (PL) COLUMN */}
+          {/* LEFT COLUMN: POLAND (PL) */}
           <div className="p-4 rounded-xl bg-slate-950/60 border border-indigo-500/30 space-y-3.5">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
@@ -379,7 +442,7 @@ export const Dashboard: React.FC = () => {
                 >
                   {POLISH_CITIES.map((c) => (
                     <option key={c} value={c}>
-                      {c}, Poland
+                      {c}, Poland (Group 3 — €550/mo)
                     </option>
                   ))}
                 </select>
@@ -541,31 +604,46 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* NETHERLANDS (NL) COLUMN */}
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-orange-500/30 space-y-3.5">
+          {/* RIGHT COLUMN: ANY EUROPEAN COUNTRY COMPARISON */}
+          <div className="p-4 rounded-xl bg-slate-950/60 border border-cyan-500/30 space-y-3.5">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-xs font-black bg-orange-500/20 text-orange-300 border border-orange-500/40">
-                  NL • Netherlands
+                <span className="px-2 py-0.5 rounded text-xs font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                  {comparePlan.city.countryCode} • {comparePlan.city.country}
                 </span>
                 <select
-                  value={nlCity}
-                  onChange={(e) => setNlCity(e.target.value)}
-                  className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-orange-500"
+                  value={compareCity}
+                  onChange={(e) => setCompareCity(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none focus:border-cyan-500"
                 >
-                  {DUTCH_CITIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}, Netherlands
-                    </option>
-                  ))}
+                  <optgroup label="Group 1 — €650/month (NO, DK)">
+                    <option value="Oslo">Oslo, Norway (NO — €650/mo)</option>
+                    <option value="Copenhagen">Copenhagen, Denmark (DK — €650/mo)</option>
+                  </optgroup>
+                  <optgroup label="Group 2 — €600/month (EE, SI, SK, CZ)">
+                    <option value="Tallinn">Tallinn, Estonia (EE — €600/mo)</option>
+                    <option value="Tartu">Tartu, Estonia (EE — €600/mo)</option>
+                    <option value="Ljubljana">Ljubljana, Slovenia (SI — €600/mo)</option>
+                    <option value="Bratislava">Bratislava, Slovakia (SK — €600/mo)</option>
+                    <option value="Prague">Prague, Czechia (CZ — €600/mo)</option>
+                    <option value="Brno">Brno, Czechia (CZ — €600/mo)</option>
+                  </optgroup>
+                  <optgroup label="Group 3 — €550/month (HR, HU, BG, RS, PL)">
+                    <option value="Zagreb">Zagreb, Croatia (HR — €550/mo)</option>
+                    <option value="Split">Split, Croatia (HR — €550/mo)</option>
+                    <option value="Budapest">Budapest, Hungary (HU — €550/mo)</option>
+                    <option value="Sofia">Sofia, Bulgaria (BG — €550/mo)</option>
+                    <option value="Novi Sad">Novi Sad, Serbia (RS — €550/mo)</option>
+                    <option value="Belgrade">Belgrade, Serbia (RS — €550/mo)</option>
+                  </optgroup>
                 </select>
               </div>
               <div className="text-right">
-                <span className="text-[10px] uppercase font-bold text-orange-300 block">
-                  IPCA {nlPlan.scholarshipGroup} Scholarship
+                <span className="text-[10px] uppercase font-bold text-cyan-300 block">
+                  IPCA {comparePlan.scholarshipGroup} Scholarship
                 </span>
                 <span className="text-sm font-black text-emerald-400">
-                  €{nlPlan.monthlyScholarship}/mo (€{nlPlan.totalScholarship} / {durationMonths} mo)
+                  €{comparePlan.monthlyScholarship}/mo (€{comparePlan.totalScholarship} / {durationMonths} mo)
                 </span>
               </div>
             </div>
@@ -574,15 +652,15 @@ export const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between bg-slate-900/80 px-3 py-2 rounded-lg border border-slate-800 text-xs">
               <div>
                 <span className="text-slate-300 font-semibold block">Confirmed Employer Compensation (€/mo):</span>
-                <span className="text-[10px] text-slate-500">{nlPlan.city.typicalPaidStipendRange}</span>
+                <span className="text-[10px] text-slate-500">{comparePlan.city.typicalPaidStipendRange}</span>
               </div>
               <input
                 type="number"
                 min={0}
                 step={50}
-                value={nlEmployerComp}
-                onChange={(e) => setNlEmployerComp(Math.max(0, Number(e.target.value)))}
-                className="w-24 px-2.5 py-1 bg-slate-800 border border-slate-700 rounded text-right text-xs font-mono text-white focus:outline-none focus:border-orange-500"
+                value={compareEmployerComp}
+                onChange={(e) => setCompareEmployerComp(Math.max(0, Number(e.target.value)))}
+                className="w-24 px-2.5 py-1 bg-slate-800 border border-slate-700 rounded text-right text-xs font-mono text-white focus:outline-none focus:border-cyan-500"
               />
             </div>
 
@@ -592,94 +670,100 @@ export const Dashboard: React.FC = () => {
                 <span className="text-slate-400">
                   {housingMode === 'dorm' ? '🎓 Univ. Dorm Rent:' : '🏠 Private Room Rent:'}
                 </span>
-                <span className="font-mono font-semibold text-emerald-300">€{nlPlan.effectiveRent}/mo</span>
+                <span className="font-mono font-semibold text-emerald-300">€{comparePlan.effectiveRent}/mo</span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Utilities & Internet:</span>
                 <span className="font-mono font-semibold text-slate-200">
-                  {nlPlan.effectiveUtilities === 0 ? '€0 (Included)' : `€${nlPlan.effectiveUtilities}/mo`}
+                  {comparePlan.effectiveUtilities === 0 ? '€0 (Included)' : `€${comparePlan.effectiveUtilities}/mo`}
                 </span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Food & Groceries:</span>
-                <span className="font-mono font-semibold text-slate-200">€{nlPlan.city.foodGroceries}/mo</span>
+                <span className="font-mono font-semibold text-slate-200">€{comparePlan.city.foodGroceries}/mo</span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Public Transport:</span>
-                <span className="font-mono font-semibold text-slate-200">€{nlPlan.city.publicTransport}/mo</span>
+                <span className="font-mono font-semibold text-slate-200">€{comparePlan.city.publicTransport}/mo</span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Other Living Costs:</span>
-                <span className="font-mono font-semibold text-slate-200">€{nlPlan.city.otherLiving}/mo</span>
+                <span className="font-mono font-semibold text-slate-200">€{comparePlan.city.otherLiving}/mo</span>
               </div>
               <div className="p-2 rounded bg-slate-900/50 border border-slate-800/80 flex justify-between">
                 <span className="text-slate-400">Flights + Deposit (1x):</span>
                 <span className="font-mono font-semibold text-slate-300">
-                  €{nlPlan.city.travelFromPortugal} + €{nlPlan.effectiveDeposit}
+                  €{comparePlan.city.travelFromPortugal} + €{comparePlan.effectiveDeposit}
                 </span>
               </div>
             </div>
 
             {housingMode === 'dorm' && (
               <div className="px-3 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-[11px] text-emerald-300 flex items-center justify-between">
-                <span>🎓 Staying in {nlCity} Student Residence saves you:</span>
+                <span>🎓 Staying in {compareCity} University Dormitory saves you:</span>
                 <span className="font-mono font-black">
-                  €{nlPlan.monthlyDormSavings}/mo (€{nlPlan.totalDormSavingsForDuration} over {durationMonths} mo)
+                  €{comparePlan.monthlyDormSavings}/mo (€{comparePlan.totalDormSavingsForDuration} over {durationMonths} mo)
                 </span>
               </div>
             )}
 
             {/* Summary Totals */}
-            <div className="p-3 rounded-xl bg-orange-950/20 border border-orange-800/40 space-y-1.5 text-xs">
+            <div className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-1.5 text-xs">
               <div className="flex justify-between">
                 <span className="text-slate-300">Estimated Monthly Living Expenses:</span>
-                <span className="font-mono font-bold text-white">€{nlPlan.monthlyExpenses}/mo</span>
+                <span className="font-mono font-bold text-white">€{comparePlan.monthlyExpenses}/mo</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-300">Monthly Financial Gap / Surplus:</span>
                 <span
                   className={`font-mono font-bold ${
-                    nlPlan.monthlyGapOrSurplus >= 0 ? 'text-emerald-400' : 'text-amber-300'
+                    comparePlan.monthlyGapOrSurplus >= 0 ? 'text-emerald-400' : 'text-amber-300'
                   }`}
                 >
-                  {nlPlan.monthlyGapOrSurplus >= 0 ? `+€${nlPlan.monthlyGapOrSurplus}/mo surplus` : `€${nlPlan.monthlyGapOrSurplus}/mo gap`}
+                  {comparePlan.monthlyGapOrSurplus >= 0
+                    ? `+€${comparePlan.monthlyGapOrSurplus}/mo surplus`
+                    : `€${comparePlan.monthlyGapOrSurplus}/mo gap`}
                 </span>
               </div>
-              <div className="flex justify-between pt-1 border-t border-orange-800/40">
+              <div className="flex justify-between pt-1 border-t border-cyan-800/40">
                 <span className="text-slate-300">Total Expenses ({durationMonths} mo + flights):</span>
                 <span className="font-mono font-bold text-slate-200">
-                  €{nlPlan.totalExpensesNetDeposit} (+€{nlPlan.effectiveDeposit} refundable deposit)
+                  €{comparePlan.totalExpensesNetDeposit} (+€{comparePlan.effectiveDeposit} refundable deposit)
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-300">Total Scholarship + Confirmed Pay:</span>
-                <span className="font-mono font-bold text-emerald-400">€{nlPlan.totalFunding}</span>
+                <span className="font-mono font-bold text-emerald-400">€{comparePlan.totalFunding}</span>
               </div>
-              <div className="flex justify-between pt-1 border-t border-orange-800/40">
+              <div className="flex justify-between pt-1 border-t border-cyan-800/40">
                 <span className="font-bold text-white">Estimated Personal Contribution ({durationMonths} mo):</span>
-                <span className="font-mono font-black text-amber-300">€{nlPlan.estimatedPersonalContribution}</span>
+                <span className="font-mono font-black text-amber-300">€{comparePlan.estimatedPersonalContribution}</span>
               </div>
             </div>
 
-            {/* Nearest University Dormitories in Selected Dutch City */}
+            {/* Nearest University Dormitories in Selected Comparison City */}
             <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
-              <div className="text-[11px] font-bold text-orange-300 flex items-center justify-between">
+              <div className="text-[11px] font-bold text-cyan-300 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5 text-orange-400" />
-                  Nearest University Student Residences in {nlCity} ({nlPlan.dormOptions.length})
+                  <GraduationCap className="w-3.5 h-3.5 text-cyan-400" />
+                  Nearest University Student Residences in {compareCity} ({comparePlan.dormOptions.length})
                 </span>
                 <button
                   onClick={() =>
-                    openExternal(`https://www.google.com/maps/search/Student+Housing+DUWO+SSH+${encodeURIComponent(nlCity)}+Netherlands`)
+                    openExternal(
+                      `https://www.google.com/maps/search/University+Student+Dormitory+${encodeURIComponent(
+                        compareCity + ' ' + comparePlan.city.country
+                      )}`
+                    )
                   }
-                  className="text-[10px] text-orange-400 hover:text-orange-300 flex items-center gap-1"
+                  className="text-[10px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
                 >
                   <span>View All on Maps</span>
                   <ExternalLink className="w-2.5 h-2.5" />
                 </button>
               </div>
               <div className="space-y-1.5">
-                {nlPlan.dormOptions.map((dorm) => (
+                {comparePlan.dormOptions.map((dorm) => (
                   <div key={dorm.id} className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80 space-y-1 text-[11px]">
                     <div className="flex items-start justify-between gap-2">
                       <span className="font-bold text-white">{dorm.name}</span>
@@ -688,7 +772,7 @@ export const Dashboard: React.FC = () => {
                       </span>
                     </div>
                     <div className="text-[10px] text-slate-400">{dorm.addressOrDistrict} • {dorm.monthlyPriceRangeText}</div>
-                    <div className="text-[10px] text-orange-300">{dorm.proximityToTechHubs}</div>
+                    <div className="text-[10px] text-cyan-300">{dorm.proximityToTechHubs}</div>
                     <div className="flex items-center justify-between pt-1">
                       <span className="text-[9.5px] text-slate-500">{dorm.eligibilityNote}</span>
                       <div className="flex items-center gap-2 shrink-0">
@@ -700,9 +784,9 @@ export const Dashboard: React.FC = () => {
                         </button>
                         <button
                           onClick={() => openExternal(dorm.bookingUrl)}
-                          className="px-2 py-0.5 rounded bg-orange-600/30 hover:bg-orange-600/50 text-orange-200 border border-orange-500/40 text-[10px] font-bold"
+                          className="px-2 py-0.5 rounded bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-500/40 text-[10px] font-bold"
                         >
-                          Residence Portal ↗
+                          Dorm Portal ↗
                         </button>
                       </div>
                     </div>
@@ -712,8 +796,8 @@ export const Dashboard: React.FC = () => {
             </div>
 
             <div className="text-[10px] text-slate-400 space-y-0.5">
-              <div><strong>Housing Note:</strong> {nlPlan.city.housingNote}</div>
-              <div><strong>Sources (Estimates):</strong> {nlPlan.city.sources}</div>
+              <div><strong>Housing Note:</strong> {comparePlan.city.housingNote}</div>
+              <div><strong>Sources (Estimates):</strong> {comparePlan.city.sources}</div>
             </div>
           </div>
         </div>
@@ -723,18 +807,18 @@ export const Dashboard: React.FC = () => {
           <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div>
             <strong className="text-slate-200">Important Verification Note:</strong> {IPCA_SCHOLARSHIP_CONFIG.confirmationNotice}{' '}
-            Living costs above are market estimates (Oct 2026) and vary by housing type; enter confirmed employer compensation only when verified in an internship offer.
+            Living costs above are market estimates (Nov 2026) and vary by housing type; enter confirmed employer compensation only when verified in an internship offer.
           </div>
         </div>
       </div>
 
-      {/* Featured Companies Ready for Contact */}
+      {/* Featured Companies Ready for Contact across 11 Countries */}
       <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
         <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-emerald-400" />
-              Top Rated Companies for Your Degree (Poland & Netherlands)
+              Top Rated Companies for Your Degree (Poland + 10 EU Countries)
             </h3>
             <p className="text-xs text-slate-400">Ranked objectively by 0–100 IPCA Web Multimedia fit score</p>
           </div>
@@ -751,29 +835,56 @@ export const Dashboard: React.FC = () => {
             {
               id: 'comp-brainly',
               name: 'Brainly',
-              city: 'Kraków, Poland (PL)',
+              city: 'Kraków, Poland (PL • €550/mo)',
               fit: 97,
               role: 'Frontend / Web Engineering Intern',
               tech: ['React', 'TypeScript', 'Next.js', 'Figma'],
               reason: 'Global HQ in Kraków. Direct match for modern web development & UI/UX.',
             },
             {
-              id: 'comp-nl-dpdk',
-              name: 'DPDK Digital Agency',
-              city: 'Rotterdam, Netherlands (NL)',
-              fit: 97,
-              role: 'Creative Frontend / Web Dev Intern',
-              tech: ['TypeScript', 'React', 'Next.js', 'UI/UX'],
-              reason: 'Award-winning Rotterdam digital studio hosting 5-month international web & design interns.',
+              id: 'comp-hr-infinum',
+              name: 'Infinum',
+              city: 'Zagreb, Croatia (HR • €550/mo)',
+              fit: 98,
+              role: 'Frontend Web (React/TS) & UI/UX Intern',
+              tech: ['React', 'TypeScript', 'Next.js', 'Figma'],
+              reason: 'Premier Croatian digital product agency with Infinum Academy & verified careers@infinum.com.',
             },
             {
-              id: 'comp-nl-dept',
-              name: 'DEPT® Digital Agency',
-              city: 'Amsterdam & Rotterdam (NL)',
-              fit: 96,
-              role: 'Frontend Development & UI/UX Intern',
-              tech: ['React', 'TypeScript', 'Figma', 'Design Systems'],
-              reason: 'Flagship Dutch digital agency with structured Feb–Jun semester internships & stagevergoeding.',
+              id: 'comp-cz-strv',
+              name: 'STRV',
+              city: 'Prague & Brno, Czechia (CZ • €600/mo)',
+              fit: 98,
+              role: 'Frontend Web / UI/UX Design & QA Intern',
+              tech: ['React', 'TypeScript', 'Next.js', 'Figma'],
+              reason: '100% English-speaking digital product agency in Prague & Brno with STRV Academy.',
+            },
+            {
+              id: 'comp-dk-signifly',
+              name: 'Signifly',
+              city: 'Copenhagen, Denmark (DK • €650/mo)',
+              fit: 98,
+              role: 'Frontend Web & Digital Design Intern',
+              tech: ['React', 'Next.js', 'TypeScript', 'Figma'],
+              reason: 'Award-winning Copenhagen digital agency hosting 4–5 month semester interns (Group 1 €650/mo).',
+            },
+            {
+              id: 'comp-si-povio',
+              name: 'Povio',
+              city: 'Ljubljana, Slovenia (SI • €600/mo)',
+              fit: 98,
+              role: 'Frontend (React/TS) & UI/UX Design Intern',
+              tech: ['React', 'TypeScript', 'Figma', 'QA'],
+              reason: 'Flagship Slovenian product agency in Ljubljana with Povio Academy & €165/mo student dorms.',
+            },
+            {
+              id: 'comp-hu-uxstudio',
+              name: 'UX studio',
+              city: 'Budapest, Hungary (HU • €550/mo)',
+              fit: 98,
+              role: 'UI/UX Product Design Intern',
+              tech: ['Figma', 'UI/UX Design', 'Prototyping', 'Web Design'],
+              reason: 'Internationally acclaimed Budapest UX product design agency working 100% in English.',
             },
           ].map((item) => (
             <div

@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const initSqlJs = require('sql.js');
 const { SCHEMA_SQL } = require('./schema.cjs');
-const { seedNetherlandsData } = require('./netherlandsData.cjs');
+const { seedEuropeanCountriesData } = require('./europeanCountriesData.cjs');
 
 let dbInstance = null;
 
@@ -144,8 +144,8 @@ async function initializeDatabase() {
 
   // Seed default data if needed
   seedInitialData(dbInstance);
-  // Seed Netherlands (NL) companies & opportunities idempotently without disturbing existing records
-  seedNetherlandsData(dbInstance);
+  // Seed 10 new European countries & remove Netherlands (NL) idempotently without disturbing Polish records
+  seedEuropeanCountriesData(dbInstance);
 
   return dbInstance;
 }
@@ -570,14 +570,16 @@ function seedInitialData(db) {
     { key: 'ai_provider', value: 'builtin', desc: 'AI Provider: builtin or openai' },
     { key: 'openai_api_key', value: '', desc: 'Encrypted or masked OpenAI API Key' },
     { key: 'preferred_cities', value: JSON.stringify(['Kraków', 'Warsaw', 'Gdańsk']), desc: 'Primary target cities in Poland' },
-    { key: 'working_hours_only', value: 'true', desc: 'Only schedule emails during Polish business hours (9am - 5pm CET)' },
-    { key: 'supported_countries', value: JSON.stringify(['Poland', 'Netherlands']), desc: 'Supported internship destination countries (PL, NL)' },
-    { key: 'ipca_scholarship_pl_eur', value: '600', desc: 'IPCA Group 2 monthly scholarship rate for Poland (€/month)' },
-    { key: 'ipca_scholarship_nl_eur', value: '650', desc: 'IPCA Group 1 monthly scholarship rate for the Netherlands (€650/month)' },
+    { key: 'working_hours_only', value: 'true', desc: 'Only schedule emails during European business hours (9am - 5pm CET)' },
+    { key: 'supported_countries', value: JSON.stringify(['Poland', 'Croatia', 'Hungary', 'Estonia', 'Bulgaria', 'Serbia', 'Slovenia', 'Slovakia', 'Czechia', 'Norway', 'Denmark']), desc: '11 Supported European internship destination countries' },
+    { key: 'ipca_scholarship_group1_eur', value: '650', desc: 'IPCA Group 1 monthly scholarship rate (€650/mo: Norway, Denmark)' },
+    { key: 'ipca_scholarship_group2_eur', value: '600', desc: 'IPCA Group 2 monthly scholarship rate (€600/mo: Estonia, Slovenia, Slovakia, Czechia)' },
+    { key: 'ipca_scholarship_group3_eur', value: '550', desc: 'IPCA Group 3 monthly scholarship rate (€550/mo: Croatia, Hungary, Bulgaria, Serbia, Poland)' },
+    { key: 'ipca_scholarship_pl_eur', value: '550', desc: 'IPCA Group 3 monthly scholarship rate for Poland (€550/month)' },
     { key: 'ipca_scholarship_source', value: 'IPCA scholarship document supplied by user', desc: 'Source label for scholarship estimates (requires confirmation with IPCA)' }
   ];
 
-  const insertSetting = db.prepare('INSERT OR IGNORE INTO settings (key, value, description) VALUES (?, ?, ?)');
+  const insertSetting = db.prepare('INSERT OR REPLACE INTO settings (key, value, description) VALUES (?, ?, ?)');
   for (const s of defaultSettings) {
     insertSetting.run([s.key, s.value, s.desc]);
   }

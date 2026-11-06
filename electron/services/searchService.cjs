@@ -1,64 +1,61 @@
 const { calculateFitScore } = require('./fitScoreService.cjs');
-const { seedNetherlandsData } = require('../database/netherlandsData.cjs');
+const { seedEuropeanCountriesData } = require('../database/europeanCountriesData.cjs');
 
 // Helper for safe rate-limiting delay between external requests
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Verified Greenhouse engineering & creative boards (Poland & Netherlands)
+// Verified Greenhouse engineering & digital product boards across supported European countries
 const GREENHOUSE_BOARDS = [
   // Poland (PL)
   { token: 'allegro', company: 'Allegro', city: 'Warsaw', country: 'Poland', countryCode: 'PL', defaultTech: ['React', 'TypeScript', 'Java'] },
-  { token: 'snowflake', company: 'Snowflake Poland', city: 'Warsaw', country: 'Poland', countryCode: 'PL', defaultTech: ['TypeScript', 'React', 'C++', 'Python'] },
-  { token: 'docplanner', company: 'Docplanner', city: 'Warsaw', country: 'Poland', countryCode: 'PL', defaultTech: ['PHP', 'React', 'TypeScript'] },
+  { token: 'docplanner', company: 'Docplanner', city: 'Warsaw', country: 'Poland', countryCode: 'PL', defaultTech: ['TypeScript', 'React', 'Node.js'] },
   { token: 'huuugegames', company: 'Huuuge Games', city: 'Warsaw', country: 'Poland', countryCode: 'PL', defaultTech: ['Unity', 'C#', 'QA Testing', 'TypeScript'] },
-  // Netherlands (NL)
-  { token: 'adyen', company: 'Adyen', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['TypeScript', 'React', 'Java', 'Node.js', 'UI/UX'] },
-  { token: 'miro', company: 'Miro', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['TypeScript', 'React', 'Canvas/WebGL', 'UI/UX Design'] },
-  { token: 'guerrillagames', company: 'Guerrilla Games', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['C++', 'C#', 'Python', 'Game QA', 'Web Tools'] },
-  { token: 'elastic', company: 'Elastic Amsterdam', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['TypeScript', 'React', 'Node.js', 'UI/UX'] },
+  // Czechia (CZ)
+  { token: 'strv', company: 'STRV', city: 'Prague', country: 'Czechia', countryCode: 'CZ', defaultTech: ['React', 'TypeScript', 'Next.js', 'Figma', 'UI/UX'] },
+  // Estonia (EE)
+  { token: 'veriff', company: 'Veriff', city: 'Tallinn', country: 'Estonia', countryCode: 'EE', defaultTech: ['TypeScript', 'React', 'Node.js', 'UI/UX', 'QA'] },
+  // Denmark (DK)
+  { token: 'pleo', company: 'Pleo', city: 'Copenhagen', country: 'Denmark', countryCode: 'DK', defaultTech: ['TypeScript', 'React', 'Kotlin', 'UI/UX Design'] },
 ];
 
-// Verified Lever engineering & digital agency boards (Poland & Netherlands)
+// Verified Lever engineering & digital agency boards across supported European countries
 const LEVER_BOARDS = [
   // Poland (PL)
   { token: 'netguru', company: 'Netguru', city: 'Gdańsk', country: 'Poland', countryCode: 'PL', defaultTech: ['React', 'TypeScript', 'Figma', 'UI/UX'] },
-  { token: 'spyrosoft', company: 'Spyrosoft', city: 'Kraków', country: 'Poland', countryCode: 'PL', defaultTech: ['C++', 'React', 'QA', 'Embedded'] },
-  // Netherlands (NL)
-  { token: 'backbase', company: 'Backbase', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['TypeScript', 'React', 'Angular', 'UI/UX Design', 'QA'] },
-  { token: 'messagebird', company: 'Bird (MessageBird)', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['TypeScript', 'React', 'Node.js', 'Go'] },
+  { token: 'spyrosoft', company: 'Spyrosoft', city: 'Kraków', country: 'Poland', countryCode: 'PL', defaultTech: ['TypeScript', 'React', 'QA', 'Node.js'] },
+  // Slovakia (SK)
+  { token: 'vacuumlabs', company: 'Vacuumlabs', city: 'Bratislava', country: 'Slovakia', countryCode: 'SK', defaultTech: ['TypeScript', 'React', 'Node.js', 'UI/UX'] },
 ];
 
-// Verified Ashby engineering & web product boards (Poland & Netherlands)
+// Verified Ashby engineering & web product boards across supported European countries
 const ASHBY_BOARDS = [
   // Poland (PL)
   { token: 'brainly', company: 'Brainly', city: 'Kraków', country: 'Poland', countryCode: 'PL', defaultTech: ['React', 'TypeScript', 'GraphQL', 'Python'] },
-  // Netherlands (NL)
-  { token: 'framer', company: 'Framer', city: 'Amsterdam', country: 'Netherlands', countryCode: 'NL', defaultTech: ['React', 'TypeScript', 'Interactive Web', 'Figma', 'UI/UX'] },
+  // Norway (NO)
+  { token: 'sanity', company: 'Sanity (Oslo Engineering Hub)', city: 'Oslo', country: 'Norway', countryCode: 'NO', defaultTech: ['TypeScript', 'React', 'Next.js', 'Design Systems'] },
 ];
 
 function matchesCountryFilter(boardCountry, boardCode, filterCountry) {
   if (!filterCountry || filterCountry === 'All') return true;
-  const f = filterCountry.toLowerCase();
-  if (f === 'poland' || f === 'pl') return boardCountry === 'Poland' || boardCode === 'PL';
-  if (f === 'netherlands' || f === 'the netherlands' || f === 'nl') return boardCountry === 'Netherlands' || boardCode === 'NL';
-  return true;
+  const f = filterCountry.toLowerCase().trim();
+  return (
+    (boardCountry || '').toLowerCase() === f ||
+    (boardCode || '').toLowerCase() === f
+  );
 }
 
 function detectLanguageRequirement(title, locationText = '') {
   const combined = `${title} ${locationText}`.toLowerCase();
-  if (combined.includes('dutch required') || combined.includes('nederlands vereist') || combined.includes('fluent dutch')) {
-    return 'Dutch & English (Dutch required)';
-  }
   if (combined.includes('polish required') || combined.includes('wymagany polski')) {
     return 'Polish & English (Polish required)';
   }
-  return 'English (International / English-friendly)';
+  return 'English (Fluent / International-friendly)';
 }
 
 function detectCategory(title) {
   const t = (title || '').toLowerCase();
   if (t.includes('ui') || t.includes('ux') || t.includes('design') || t.includes('product design')) {
-    return 'UI/UX Design & Web Design';
+    return 'UI/UX & Digital Product Design';
   }
   if (t.includes('multimedia') || t.includes('interactive') || t.includes('creative')) {
     return 'Multimedia & Interactive Web';
@@ -83,8 +80,8 @@ async function runCompanyAndInternshipSearch({
   includeSpeculative = true,
   includeOfficial = true
 }) {
-  // Ensure verified Netherlands directory is seeded
-  seedNetherlandsData(db);
+  // Ensure verified 10 European countries directory is seeded & NL is removed
+  seedEuropeanCountriesData(db);
 
   const profileRow = db.prepare('SELECT * FROM user_profile LIMIT 1').get();
   const searchRunId = 'run-' + Date.now();
@@ -104,25 +101,6 @@ async function runCompanyAndInternshipSearch({
     const title = (job.title || '').toLowerCase();
     const locName = (job.location?.name || job.categories?.location || board.city || '').toLowerCase();
 
-    // If board is multi-country (like Adyen/Miro/Elastic), ensure location matches Poland or Netherlands if specified
-    if (board.country === 'Netherlands' && locName) {
-      const isDutchLoc =
-        locName.includes('amsterdam') ||
-        locName.includes('rotterdam') ||
-        locName.includes('utrecht') ||
-        locName.includes('eindhoven') ||
-        locName.includes('hague') ||
-        locName.includes('den haag') ||
-        locName.includes('groningen') ||
-        locName.includes('delft') ||
-        locName.includes('leiden') ||
-        locName.includes('arnhem') ||
-        locName.includes('breda') ||
-        locName.includes('netherlands') ||
-        locName.includes('nl');
-      if (!isDutchLoc) return;
-    }
-
     const isInternOrJunior =
       title.includes('intern') ||
       title.includes('internship') ||
@@ -132,13 +110,8 @@ async function runCompanyAndInternshipSearch({
       title.includes('staz') ||
       title.includes('staż') ||
       title.includes('praktyk') ||
-      title.includes('stage') ||
-      title.includes('stagiair') ||
-      title.includes('stagiere') ||
-      title.includes('afstudeerstage') ||
-      title.includes('meewerkstage') ||
-      title.includes('working student') ||
-      title.includes('werkstudent');
+      title.includes('student') ||
+      title.includes('academy');
 
     const isRelevantCategory =
       isInternOrJunior &&
@@ -168,9 +141,9 @@ async function runCompanyAndInternshipSearch({
       if (!comp) {
         const compId = 'comp-' + board.countryCode.toLowerCase() + '-' + board.token;
         db.prepare(`
-          INSERT INTO companies (id, name, city, country, website, careers_url, industry, fit_score, priority)
-          VALUES (?, ?, ?, ?, ?, ?, 'Software & Digital Technology', 88, 'High')
-        `).run(compId, board.company, board.city, board.country, `https://${board.token}.com`, absUrl);
+          INSERT INTO companies (id, name, city, country, country_code, website, careers_url, industry, fit_score, priority)
+          VALUES (?, ?, ?, ?, ?, ?, ?, 'Software & Digital Technology', 92, 'High')
+        `).run(compId, board.company, board.city, board.country, board.countryCode, `https://${board.token}.com`, absUrl);
         comp = { id: compId };
         newCompanies++;
       }
@@ -183,7 +156,7 @@ async function runCompanyAndInternshipSearch({
         const oppId = 'opp-' + board.token + '-' + (job.id || Date.now());
         const detectedCat = detectCategory(job.title);
         const langReq = detectLanguageRequirement(job.title, locName);
-        const durationMo = board.country === 'Netherlands' ? 5 : 4;
+        const durationMo = 5;
         const fit = calculateFitScore(profileRow || {}, {
           city: board.city,
           country: board.country,
@@ -196,11 +169,11 @@ async function runCompanyAndInternshipSearch({
 
         db.prepare(`
           INSERT INTO opportunities (
-            id, company_id, title, description, city, country, category,
+            id, company_id, title, description, city, country, country_code, category,
             work_arrangement, is_official_vacancy, required_technologies,
-            internship_start, internship_end, duration_months, language_requirements,
-            source_name, source_url, fit_score, fit_breakdown, verified_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Hybrid', 1, ?, '2027-02-01', '2027-06-30', ?, ?, ?, ?, ?, ?, datetime('now'))
+            internship_start, internship_end, duration_months, application_deadline,
+            language_requirements, source_name, source_url, fit_score, fit_breakdown, verified_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Hybrid', 1, ?, '2027-02-01', '2027-06-30', ?, '2026-11-30', ?, ?, ?, ?, ?, datetime('now'))
         `).run(
           oppId,
           comp.id,
@@ -208,6 +181,7 @@ async function runCompanyAndInternshipSearch({
           `Live verified vacancy from official ${board.company} (${board.city}, ${board.country}) careers board: ${job.title}`,
           board.city,
           board.country,
+          board.countryCode,
           detectedCat,
           JSON.stringify(board.defaultTech),
           durationMo,
@@ -228,9 +202,9 @@ async function runCompanyAndInternshipSearch({
     if (city !== 'All' && !board.city.toLowerCase().includes(city.toLowerCase())) continue;
 
     try {
-      await sleep(500);
+      await sleep(350);
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4500);
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
       const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${board.token}/jobs`, {
         signal: controller.signal
       });
@@ -254,9 +228,9 @@ async function runCompanyAndInternshipSearch({
     if (city !== 'All' && !board.city.toLowerCase().includes(city.toLowerCase())) continue;
 
     try {
-      await sleep(500);
+      await sleep(350);
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4500);
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
       const res = await fetch(`https://api.lever.co/v0/postings/${board.token}?mode=json`, {
         signal: controller.signal
       });
@@ -286,9 +260,9 @@ async function runCompanyAndInternshipSearch({
     if (city !== 'All' && !board.city.toLowerCase().includes(city.toLowerCase())) continue;
 
     try {
-      await sleep(500);
+      await sleep(350);
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4500);
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
       const res = await fetch(`https://api.ashbyhq.com/posting-api/job-board/${board.token}`, {
         signal: controller.signal
       });
@@ -311,11 +285,12 @@ async function runCompanyAndInternshipSearch({
     }
   }
 
-  // 4. Refresh fit scores of all companies and opportunities based on active user profile
+  // 4. Refresh fit scores of all active opportunities based on active user profile
   const allOpps = db.prepare(`
     SELECT o.*, c.name as company_name, c.is_gaming, c.industry
     FROM opportunities o 
     JOIN companies c ON o.company_id = c.id
+    WHERE o.is_active = 1
   `).all();
 
   for (const op of allOpps) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Company, Opportunity, Document } from '../../types';
+import { getCountryMeta } from '../../data/financialComparisonData';
 import {
   Sparkles,
   Send,
@@ -283,7 +284,7 @@ export const EmailGenerator: React.FC = () => {
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
             <Building2 className="w-3.5 h-3.5 text-indigo-400" />
-            Target Company (Poland & Netherlands):
+            Target Company (11 European Countries):
           </label>
           <select
             value={selectedCompId}
@@ -291,10 +292,10 @@ export const EmailGenerator: React.FC = () => {
             className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-medium cursor-pointer"
           >
             {companies.map((c) => {
-              const code = c.country === 'Netherlands' || c.country_code === 'NL' ? 'NL' : 'PL';
+              const meta = getCountryMeta(c.country || c.country_code);
               return (
                 <option key={c.id} value={c.id}>
-                  [{code}] {c.name} ({c.city} • {c.fit_score}% Fit)
+                  [{meta.countryCode}] {c.name} ({c.city} • {c.fit_score}% Fit)
                 </option>
               );
             })}

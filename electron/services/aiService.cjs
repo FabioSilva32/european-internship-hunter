@@ -3,22 +3,33 @@
 
 const getLiveProjectsBlock = (p) => `• CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
 • Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
-• Poland & NL Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
+• European Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
 • Retiro Interior (Tourism Portal): https://retirointerior.netlify.app
 • StocksVault (Financial Portfolio Tracker): https://stocksvault.netlify.app
 • ACRIALBI (Creative Showcase): https://acrialbi.netlify.app
 • GitHub Profile: ${p.github_url || 'https://github.com/FabioSilva32'}`;
 
 const getCountryLabel = (c) => {
-  const country = (c?.country || 'Poland').toLowerCase();
-  if (country.includes('netherlands') || country === 'nl') return 'the Netherlands';
-  return 'Poland';
+  const country = (c?.country || 'Poland').trim();
+  return country || 'Poland';
 };
 
 const getSectorAdjective = (c) => {
-  const country = (c?.country || 'Poland').toLowerCase();
-  if (country.includes('netherlands') || country === 'nl') return 'Dutch';
-  return 'Polish';
+  const country = (c?.country || 'Poland').toLowerCase().trim();
+  const map = {
+    poland: 'Polish',
+    croatia: 'Croatian',
+    hungary: 'Hungarian',
+    estonia: 'Estonian',
+    bulgaria: 'Bulgarian',
+    serbia: 'Serbian',
+    slovenia: 'Slovenian',
+    slovakia: 'Slovak',
+    czechia: 'Czech',
+    norway: 'Norwegian',
+    denmark: 'Danish',
+  };
+  return map[country] || 'European';
 };
 
 const TEMPLATES = {
@@ -52,7 +63,7 @@ I hope this email finds you well.
 
 My name is ${p.full_name}, and I am currently in my penultimate year studying Desenvolvimento Web Multimédia (Web Multimedia Development) at IPCA (Instituto Politécnico do Cávado e do Ave) in Portugal.
 
-I am planning my final-year mandatory university internship and am specifically seeking an on-site or hybrid opportunity in ${getCountryLabel(c)} (${c.city || (getCountryLabel(c) === 'the Netherlands' ? 'Amsterdam/Rotterdam/Utrecht' : 'Kraków/Warsaw')}) starting in February 2027 for a duration of approximately 4 to 5 months (February through June 2027).
+I am planning my final-year mandatory university internship and am specifically seeking an on-site or hybrid opportunity in ${getCountryLabel(c)} (${c.city || getCountryLabel(c)}) starting in February 2027 for a duration of approximately 4 to 5 months (February through June 2027).
 
 Why I am contacting ${c.name}:
 ${c.name} has built a standout reputation${c.products ? ` through projects like ${c.products}` : ` in the ${getSectorAdjective(c)} technology and digital sector`}. My degree specifically bridges the gap between software engineering, modern frontend architecture, and user experience design. Over the course of my studies, I have gained hands-on experience in:
@@ -183,7 +194,7 @@ I am currently studying Web Multimedia Development at IPCA (Instituto Politécni
 
 I have worked with Unity and C# on gameplay mechanics, state machines, and player controllers, and I am comfortable with version control (Git) and collaborative development.
 
-${getCountryLabel(c) === 'the Netherlands' ? 'The Netherlands' : 'Poland'} has one of Europe's most vibrant game development communities, and completing my university internship with ${c.name} would be an extraordinary milestone for my professional development.
+${getCountryLabel(c)} has a vibrant software and game development community, and completing my university internship with ${c.name} would be an extraordinary milestone for my professional development.
 
 Please find my CV attached. You can view my source code and demos at:
 - GitHub: ${p.github_url}
@@ -527,9 +538,9 @@ CRITICAL RULES:
 4. Do NOT claim an internship vacancy exists unless compData.isOfficialVacancy is true; for speculative applications, politely ask whether the company would consider hosting an international university intern for ~5 months in early 2027.
 5. Keep the tone professional, sincere, concise, and non-generic in professional English.
 6. Highlight the student's live deployed projects and code repositories (USE CLEAN DOMAIN URLS ONLY, NO SUBPATHS OR ANCHORS):
-   • Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
    • CineLog (Movie & TV Tracking PWA): https://cinelog-phi.vercel.app
-   • Poland & NL Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
+   • Daymark ("The Everything App" — Personal OS PWA): https://daymark-lynnx.vercel.app
+   • European Internship Hunter (Desktop App): https://github.com/FabioSilva32/poland-internship-hunter
    • Retiro Interior (Tourism Platform): https://retirointerior.netlify.app
    • StocksVault (Financial Portfolio Tracker): https://stocksvault.netlify.app
    • ACRIALBI (Creative Showcase): https://acrialbi.netlify.app

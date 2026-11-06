@@ -1,11 +1,25 @@
 // Fit score calculator (0-100) based on student profile and target company/opportunity
-// Supports both Poland (PL) and the Netherlands (NL) without country bias.
+// Supports all 11 European destination countries (PL, HR, HU, EE, BG, RS, SI, SK, CZ, NO, DK) objectively.
 // Evaluates:
 // 1. Relevance to Web Multimedia Development (Max 25 pts)
-// 2. Target Role, Digital Agency / Tech / Multimedia / Gaming Alignment (Max 25 pts)
-// 3. Location & Financial Feasibility (Max 20 pts)
-// 4. Internship Dates & ~4-5 Month Duration Compatibility (Max 15 pts)
+// 2. Target Role, SME Software House / Digital Agency / Tech / Multimedia Alignment (Max 25 pts)
+// 3. Location & Financial Feasibility with IPCA Group 1/2/3 Scholarship (Max 20 pts)
+// 4. Internship Dates & ~4-5 Month Duration Compatibility + 30 Nov 2026 Deadline (Max 15 pts)
 // 5. English-Language Accessibility & International Student Suitability (Max 15 pts)
+
+const COUNTRY_SCHOLARSHIP_INFO = {
+  poland: { name: 'Poland', code: 'PL', group: 'Group 3', rate: 550 },
+  croatia: { name: 'Croatia', code: 'HR', group: 'Group 3', rate: 550 },
+  hungary: { name: 'Hungary', code: 'HU', group: 'Group 3', rate: 550 },
+  estonia: { name: 'Estonia', code: 'EE', group: 'Group 2', rate: 600 },
+  bulgaria: { name: 'Bulgaria', code: 'BG', group: 'Group 3', rate: 550 },
+  serbia: { name: 'Serbia', code: 'RS', group: 'Group 3', rate: 550 },
+  slovenia: { name: 'Slovenia', code: 'SI', group: 'Group 2', rate: 600 },
+  slovakia: { name: 'Slovakia', code: 'SK', group: 'Group 2', rate: 600 },
+  czechia: { name: 'Czechia', code: 'CZ', group: 'Group 2', rate: 600 },
+  norway: { name: 'Norway', code: 'NO', group: 'Group 1', rate: 650 },
+  denmark: { name: 'Denmark', code: 'DK', group: 'Group 1', rate: 650 },
+};
 
 function calculateFitScore(profile, target) {
   const breakdown = [];
@@ -88,7 +102,8 @@ function calculateFitScore(profile, target) {
     techStr.includes('agency') ||
     techStr.includes('digital product') ||
     techStr.includes('ui/ux') ||
-    techStr.includes('creative studio');
+    techStr.includes('studio') ||
+    techStr.includes('software house');
   const isSoftwareOrQa =
     techStr.includes('software') ||
     techStr.includes('fullstack') ||
@@ -98,12 +113,12 @@ function calculateFitScore(profile, target) {
     techStr.includes('test');
 
   if (isWebOrAgency) {
-    areaScore += 16;
+    areaScore += 17;
   } else if (isSoftwareOrQa) {
-    areaScore += 14;
+    areaScore += 15;
   }
   if (isGaming) {
-    areaScore += 9;
+    areaScore += 8;
   } else if (isSoftwareOrQa && isWebOrAgency) {
     areaScore += 8;
   } else {
@@ -111,7 +126,7 @@ function calculateFitScore(profile, target) {
   }
   areaScore = Math.min(25, Math.max(12, areaScore));
   const areaReason = isWebOrAgency
-    ? 'High alignment with primary Web, Frontend, UI/UX & Digital Product Agency focus'
+    ? 'High alignment with primary Web, Frontend/Backend, UI/UX & SME Digital Agency/Software House focus'
     : isGaming
     ? 'Strong alignment with Game Development / Game QA & Interactive Tech category'
     : 'Solid match with Software Engineering & QA priorities';
@@ -125,58 +140,42 @@ function calculateFitScore(profile, target) {
   totalScore += areaScore;
 
   // 3. Location & Financial Feasibility (Max 20 pts)
-  // Evaluates both Polish and Dutch hubs fairly without ranking NL above PL automatically
   const city = (target.city || '').toLowerCase();
-  const country = (target.country || 'Poland').toLowerCase();
+  const countryKey = (target.country || 'Poland').toLowerCase().trim();
   const salaryInfo = (target.salary_info || '').toLowerCase();
   const hasPaidStipend =
     salaryInfo.includes('paid') ||
-    salaryInfo.includes('€') ||
-    salaryInfo.includes('eur') ||
     salaryInfo.includes('pln') ||
-    salaryInfo.includes('stagevergoeding') ||
-    salaryInfo.includes('stipend');
+    salaryInfo.includes('stipend') ||
+    salaryInfo.includes('traineeship');
 
-  let locationScore = 14;
-  let locReason = 'Supported European internship hub';
+  const meta = COUNTRY_SCHOLARSHIP_INFO[countryKey] || COUNTRY_SCHOLARSHIP_INFO.poland;
+  let locationScore = 18;
+  let locReason = `${target.city || meta.name}, ${meta.name} — IPCA ${meta.group} (€${meta.rate}/mo scholarship)`;
 
-  if (country.includes('netherlands') || country === 'nl') {
-    if (
-      city.includes('eindhoven') ||
-      city.includes('rotterdam') ||
-      city.includes('utrecht') ||
-      city.includes('delft') ||
-      city.includes('the hague') ||
-      city.includes('den haag') ||
-      city.includes('groningen') ||
-      city.includes('breda') ||
-      city.includes('leiden') ||
-      city.includes('arnhem')
-    ) {
-      locationScore = hasPaidStipend ? 19 : 17;
-      locReason = `${target.city}, Netherlands — IPCA Group 1 (€650/mo) + balanced Dutch tech hub living costs${hasPaidStipend ? ' & stagevergoeding' : ''}`;
-    } else if (city.includes('amsterdam') || city.includes('hilversum')) {
-      locationScore = hasPaidStipend ? 19 : 16;
-      locReason = `${target.city}, Netherlands — Premier Dutch digital/tech hub; IPCA Group 1 (€650/mo), higher rent offset by ${hasPaidStipend ? 'internship stipend' : 'international scale'}`;
-    } else {
-      locationScore = 16;
-      locReason = 'Netherlands tech hub (IPCA Group 1 — €650/mo scholarship)';
-    }
-  } else {
-    // Poland
+  if (meta.code === 'PL') {
     if (city.includes('kraków') || city.includes('krakow')) {
       locationScore = 20;
-      locReason = 'Top Polish location (Kraków tech & gaming ecosystem) with strong financial feasibility';
+      locReason = 'Top Polish location (Kraków tech & gaming ecosystem; IPCA Group 3 €550/mo + €150/mo AGH/UJ dorms)';
     } else if (city.includes('warsaw') || city.includes('warszawa')) {
       locationScore = 19;
-      locReason = 'Primary Polish hub (Warsaw capital tech scene) with good cost-to-scholarship ratio';
-    } else if (city.includes('gdańsk') || city.includes('gdansk') || city.includes('tricity')) {
+      locReason = 'Primary Polish hub (Warsaw capital tech scene; IPCA Group 3 €550/mo + €180/mo PW/UW dorms)';
+    } else {
       locationScore = 18;
-      locReason = 'Preferred coastal tech hub (Gdańsk / Tricity) with accessible student living costs';
-    } else if (city.includes('wrocław') || city.includes('wroclaw') || city.includes('poznań') || city.includes('poznan')) {
-      locationScore = 17;
-      locReason = 'Major Polish software & digital engineering city with affordable student housing';
+      locReason = `${target.city}, Poland — IPCA Group 3 (€550/mo) with affordable student dormitory housing`;
     }
+  } else if (meta.group === 'Group 1') {
+    // Norway & Denmark (€650/mo)
+    locationScore = hasPaidStipend ? 19 : 17;
+    locReason = `${target.city}, ${meta.name} — IPCA Group 1 (€650/mo highest grant rate) + student kollegiet/SiO housing`;
+  } else if (meta.group === 'Group 2') {
+    // Estonia, Slovenia, Slovakia, Czechia (€600/mo)
+    locationScore = 19;
+    locReason = `${target.city}, ${meta.name} — IPCA Group 2 (€600/mo grant) + affordable university dorms (~€135–€165/mo)`;
+  } else {
+    // Croatia, Hungary, Bulgaria, Serbia (€550/mo)
+    locationScore = 19;
+    locReason = `${target.city}, ${meta.name} — IPCA Group 3 (€550/mo grant) + very low student living & dorm costs (~€95–€135/mo)`;
   }
 
   breakdown.push({
@@ -190,13 +189,13 @@ function calculateFitScore(profile, target) {
 
   // 4. Internship Dates & ~4–5 Month Duration Compatibility (Max 15 pts)
   let dateScore = 14;
-  let dateReason = 'Compatible with Feb/Mar 2027 start and ~4–5 month European curricular placement';
+  let dateReason = 'Compatible with Feb/Mar–Jun/Jul 2027 (4–5 mo) & 30 Nov 2026 placement deadline';
   if (target.internship_start) {
     if (target.internship_start.includes('2027-02') || target.internship_start.includes('2027-03')) {
       dateScore = 15;
-      dateReason = `Matches February/March 2027 start (${target.duration_months || 5} months placement window)`;
+      dateReason = `Matches Feb/Mar 2027 start (${target.duration_months || 5} mo placement; apply before 30 Nov 2026)`;
     } else {
-      dateScore = 11;
+      dateScore = 12;
       dateReason = 'Flexible dates; timing requires confirmation with company';
     }
   }
@@ -210,26 +209,20 @@ function calculateFitScore(profile, target) {
   totalScore += dateScore;
 
   // 5. Language & International Student Suitability (Max 15 pts)
-  let langScore = 13;
-  let langReason = 'English accepted as working language for international interns';
+  let langScore = 14;
+  let langReason = 'English accepted as working language for international students';
   const langReq = (target.language_requirements || '').toLowerCase();
-  if (
-    langReq.includes('polish required') ||
-    langReq.includes('wymagany polski') ||
-    langReq.includes('dutch required') ||
-    langReq.includes('nederlands vereist') ||
-    langReq.includes('fluent dutch')
-  ) {
-    langScore = 6;
-    langReason = 'Notice: Local language (Dutch or Polish) proficiency mentioned — verify English flexibility';
+  if (langReq.includes('required') && !langReq.includes('english')) {
+    langScore = 7;
+    langReason = 'Notice: Local language proficiency mentioned — verify English flexibility';
   } else if (
     langReq.includes('english') ||
     target.is_gaming ||
-    (target.industry || '').toLowerCase().includes('international') ||
-    (target.industry || '').toLowerCase().includes('global')
+    (target.industry || '').toLowerCase().includes('agency') ||
+    (target.industry || '').toLowerCase().includes('studio')
   ) {
     langScore = 15;
-    langReason = 'Verified English-speaking workplace welcoming international / Erasmus+ university interns';
+    langReason = 'Verified English-speaking environment welcoming international / Erasmus+ university interns';
   }
   breakdown.push({
     factor: 'Language & International Suitability',

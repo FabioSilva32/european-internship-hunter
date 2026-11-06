@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useApp, SupportedCountryFilter } from '../../context/AppContext';
 import { Company, Priority } from '../../types';
-import { calculateCityFinancials, IPCA_SCHOLARSHIP_CONFIG } from '../../data/financialComparisonData';
+import {
+  calculateCityFinancials,
+  IPCA_SCHOLARSHIP_CONFIG,
+  SUPPORTED_COUNTRIES_LIST,
+  getCountryMeta,
+} from '../../data/financialComparisonData';
 import {
   Building2,
   MapPin,
@@ -11,13 +16,8 @@ import {
   Sparkles,
   ExternalLink,
   Mail,
-  ShieldCheck,
-  CheckCircle2,
-  Clock,
   Layers,
-  Send,
   UserCheck,
-  ChevronRight,
   TrendingUp,
   Calculator,
   GraduationCap,
@@ -52,8 +52,11 @@ export const CompanyResearch: React.FC = () => {
 
   const filteredCompanyList = companyList.filter((c) => {
     if (selectedCountry === 'All') return true;
-    if (selectedCountry === 'Netherlands') return c.country === 'Netherlands' || c.country_code === 'NL';
-    return (c.country || 'Poland') === 'Poland' || c.country_code === 'PL';
+    const meta = getCountryMeta(selectedCountry);
+    return (
+      (c.country || 'Poland').toLowerCase() === selectedCountry.toLowerCase() ||
+      (c.country_code || '').toUpperCase() === meta.countryCode
+    );
   });
 
   // Load active company details
@@ -96,31 +99,30 @@ export const CompanyResearch: React.FC = () => {
   return (
     <div className="flex-1 flex overflow-hidden bg-[#090d16]">
       {/* Left Company List Selector */}
-      <div className="w-72 border-r border-slate-800 bg-slate-900/40 flex flex-col shrink-0">
+      <div className="w-76 border-r border-slate-800 bg-slate-900/40 flex flex-col shrink-0">
         <div className="p-3.5 border-b border-slate-800 flex items-center justify-between gap-2">
-          <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+          <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5 shrink-0">
             <Building2 className="w-3.5 h-3.5 text-indigo-400" />
             Companies ({filteredCompanyList.length})
           </span>
-          <div className="flex items-center rounded-lg bg-slate-800/80 p-0.5 border border-slate-700/80 text-[10px] font-bold">
-            {(['All', 'Poland', 'Netherlands'] as const).map((cnt) => (
-              <button
-                key={cnt}
-                onClick={() => setSelectedCountry(cnt)}
-                className={`px-1.5 py-0.5 rounded transition ${
-                  selectedCountry === cnt ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {cnt === 'All' ? 'All' : cnt === 'Poland' ? 'PL' : 'NL'}
-              </button>
+          <select
+            value={selectedCountry}
+            onChange={(e) => setSelectedCountry(e.target.value as SupportedCountryFilter)}
+            className="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
+          >
+            <option value="All">All (11)</option>
+            {SUPPORTED_COUNTRIES_LIST.map((cnt) => (
+              <option key={cnt.countryCode} value={cnt.country}>
+                {cnt.countryCode} • {cnt.country} (€{cnt.monthlyRateEur})
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {filteredCompanyList.map((c) => {
             const isSelected = c.id === selectedCompanyId;
-            const isNL = c.country === 'Netherlands' || c.country_code === 'NL';
+            const meta = getCountryMeta(c.country || c.country_code);
             return (
               <button
                 key={c.id}
@@ -149,8 +151,8 @@ export const CompanyResearch: React.FC = () => {
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-purple-400" />
                     {c.city}
-                    <span className={`px-1 py-0.1 rounded text-[9px] font-bold ${isNL ? 'bg-orange-500/15 text-orange-300' : 'bg-indigo-500/15 text-indigo-300'}`}>
-                      {isNL ? 'NL' : 'PL'}
+                    <span className={`px-1 py-0.1 rounded text-[9px] font-bold border ${meta.badgeColor}`}>
+                      {meta.countryCode}
                     </span>
                   </span>
                   <span className={`text-[10px] font-medium ${c.priority === 'High' ? 'text-rose-400' : 'text-slate-400'}`}>
@@ -175,97 +177,97 @@ export const CompanyResearch: React.FC = () => {
       ) : (
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Header Card */}
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 space-y-4 shadow-xl">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-xl font-black text-white tracking-tight">{company.name}</h2>
-                  {company.is_gaming === 1 && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center gap-1">
-                      <Gamepad2 className="w-3 h-3" />
-                      Game Dev Studio
-                    </span>
-                  )}
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
-                    {company.industry}
-                  </span>
+          {(() => {
+            const compMeta = getCountryMeta(company.country || company.country_code);
+            return (
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 space-y-4 shadow-xl">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h2 className="text-xl font-black text-white tracking-tight">{company.name}</h2>
+                      {company.is_gaming === 1 && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center gap-1">
+                          <Gamepad2 className="w-3 h-3" />
+                          Game Dev Studio
+                        </span>
+                      )}
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                        {company.industry}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 pt-0.5">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-purple-400" />
+                        {company.city}, {company.country || 'Poland'}
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${compMeta.badgeColor}`}>
+                          {compMeta.countryCode} • {compMeta.group} (€{compMeta.monthlyRateEur}/mo)
+                        </span>
+                      </span>
+                      {company.website && (
+                        <button
+                          onClick={() => openExternal(company.website)}
+                          className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-medium"
+                        >
+                          <Globe className="w-3.5 h-3.5" />
+                          Website
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
+                      )}
+                      {company.careers_url && (
+                        <button
+                          onClick={() => openExternal(company.careers_url)}
+                          className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium"
+                        >
+                          <Briefcase className="w-3.5 h-3.5" />
+                          Careers Portal
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Priority & Draft Action */}
+                  <div className="flex items-center gap-3 self-stretch md:self-auto justify-between md:justify-end">
+                    <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+                      <span className="text-[11px] text-slate-400 px-2 font-medium">Priority:</span>
+                      {(['High', 'Medium', 'Low'] as Priority[]).map((p) => (
+                        <button
+                          key={p}
+                          onClick={() => handlePriorityChange(p)}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                            company.priority === p
+                              ? p === 'High'
+                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                : p === 'Medium'
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                                : 'bg-slate-700 text-slate-200'
+                              : 'text-slate-400 hover:text-slate-200'
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={handleDraftForCompany}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Draft Email</span>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-slate-400 pt-0.5">
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-purple-400" />
-                    {company.city}, {company.country || 'Poland'}
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                      company.country === 'Netherlands' || company.country_code === 'NL'
-                        ? 'bg-orange-500/15 text-orange-300 border border-orange-500/30'
-                        : 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30'
-                    }`}>
-                      {company.country === 'Netherlands' || company.country_code === 'NL' ? 'NL' : 'PL'}
-                    </span>
-                  </span>
-                  {company.website && (
-                    <button
-                      onClick={() => openExternal(company.website)}
-                      className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-medium"
-                    >
-                      <Globe className="w-3.5 h-3.5" />
-                      Website
-                      <ExternalLink className="w-3 h-3" />
-                    </button>
-                  )}
-                  {company.careers_url && (
-                    <button
-                      onClick={() => openExternal(company.careers_url)}
-                      className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium"
-                    >
-                      <Briefcase className="w-3.5 h-3.5" />
-                      Careers Portal
-                      <ExternalLink className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
+                  {company.description}
+                </p>
               </div>
+            );
+          })()}
 
-              {/* Priority & Draft Action */}
-              <div className="flex items-center gap-3 self-stretch md:self-auto justify-between md:justify-end">
-                {/* Priority Selector */}
-                <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
-                  <span className="text-[11px] text-slate-400 px-2 font-medium">Priority:</span>
-                  {(['High', 'Medium', 'Low'] as Priority[]).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => handlePriorityChange(p)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
-                        company.priority === p
-                          ? p === 'High'
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                            : p === 'Medium'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                            : 'bg-slate-700 text-slate-200'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={handleDraftForCompany}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Draft Email</span>
-                </button>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
-              {company.description}
-            </p>
-          </div>
-
-          {/* Explainable Fit Score Breakdown (Section 5) */}
+          {/* Explainable Fit Score Breakdown */}
           <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>
@@ -274,7 +276,7 @@ export const CompanyResearch: React.FC = () => {
                   Transparent Fit Score Breakdown: {company.fit_score}/100
                 </h3>
                 <p className="text-xs text-slate-400">
-                  Objective calculation based on your IPCA Web Multimedia profile & 2027 timeline
+                  Objective calculation based on your IPCA Web Multimedia profile & Feb–Jun 2027 timeline
                 </p>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
@@ -307,7 +309,7 @@ export const CompanyResearch: React.FC = () => {
           {(() => {
             const fin = calculateCityFinancials(company.city, 5, 0, housingMode);
             if (!fin) return null;
-            const isNL = fin.city.countryCode === 'NL';
+            const meta = getCountryMeta(fin.city.country);
             return (
               <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
@@ -316,11 +318,7 @@ export const CompanyResearch: React.FC = () => {
                       <Calculator className="w-4 h-4 text-emerald-400" />
                       IPCA Scholarship, University Dorms & Living Cost Snapshot: {fin.city.city}, {fin.city.country} (~5 Months)
                     </h3>
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                      isNL
-                        ? 'bg-orange-500/15 text-orange-300 border-orange-500/30'
-                        : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
-                    }`}>
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${meta.badgeColor}`}>
                       {fin.scholarshipGroup} — €{fin.monthlyScholarship}/month ({IPCA_SCHOLARSHIP_CONFIG.sourceLabel})
                     </span>
                   </div>
@@ -367,7 +365,7 @@ export const CompanyResearch: React.FC = () => {
                   <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30">
                     <div className="text-[10px] text-emerald-300">IPCA Grant (5 mo)</div>
                     <div className="text-sm font-black text-emerald-400 font-mono">€{fin.totalScholarship}</div>
-                    <div className="text-[10px] text-emerald-400/80">€{fin.monthlyScholarship}/mo</div>
+                    <div className="text-[10px] text-emerald-400/80">€{fin.monthlyScholarship}/mo ({fin.scholarshipGroup})</div>
                   </div>
                   <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
                     <div className="text-[10px] text-slate-400">Total 5-Mo Living + Flights</div>
@@ -394,10 +392,7 @@ export const CompanyResearch: React.FC = () => {
                       onClick={() =>
                         openExternal(
                           `https://www.google.com/maps/search/${encodeURIComponent(
-                            (isNL ? 'Student Housing DUWO SSH near ' : 'Dom Studencki Akademik near ') +
-                              company.name +
-                              ' ' +
-                              company.city
+                            'University Student Dormitory near ' + company.name + ' ' + company.city + ' ' + (company.country || '')
                           )}`
                         )
                       }
@@ -466,7 +461,6 @@ export const CompanyResearch: React.FC = () => {
 
           {/* Products & Tech Stack */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Products & Games */}
             <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
               <h3 className="text-xs font-bold text-slate-200 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-purple-400" />
@@ -484,7 +478,6 @@ export const CompanyResearch: React.FC = () => {
               </div>
             </div>
 
-            {/* Tech Stack */}
             <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
               <h3 className="text-xs font-bold text-slate-200 flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-indigo-400" />
@@ -503,7 +496,7 @@ export const CompanyResearch: React.FC = () => {
             </div>
           </div>
 
-          {/* Verified Contacts & Careers Inboxes (Section 12) */}
+          {/* Verified Contacts & Careers Inboxes */}
           <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>

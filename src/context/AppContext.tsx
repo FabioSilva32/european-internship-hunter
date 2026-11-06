@@ -18,7 +18,19 @@ interface Toast {
   message: string;
 }
 
-export type SupportedCountryFilter = 'All' | 'Poland' | 'Netherlands';
+export type SupportedCountryFilter =
+  | 'All'
+  | 'Poland'
+  | 'Croatia'
+  | 'Hungary'
+  | 'Estonia'
+  | 'Bulgaria'
+  | 'Serbia'
+  | 'Slovenia'
+  | 'Slovakia'
+  | 'Czechia'
+  | 'Norway'
+  | 'Denmark';
 
 interface AppContextType {
   activeTab: NavTab;

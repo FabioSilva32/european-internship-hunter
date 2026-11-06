@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Application, ApplicationStatus } from '../../types';
+import { SUPPORTED_COUNTRIES_LIST, getCountryMeta } from '../../data/financialComparisonData';
 import {
   KanbanSquare,
   Table,
@@ -398,18 +399,21 @@ export const ApplicationTracker: React.FC = () => {
                   className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-200"
                 >
                   {companyOptions.length > 0 ? (
-                    companyOptions.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        [{c.country === 'Netherlands' ? 'NL' : 'PL'}] {c.name} ({c.city})
-                      </option>
-                    ))
+                    companyOptions.map((c) => {
+                      const meta = getCountryMeta(c.country || c.country_code);
+                      return (
+                        <option key={c.id} value={c.id}>
+                          [{meta.countryCode}] {c.name} ({c.city})
+                        </option>
+                      );
+                    })
                   ) : (
                     <>
                       <option value="comp-cdpr">[PL] CD Projekt RED (Warsaw)</option>
                       <option value="comp-bloober">[PL] Bloober Team (Kraków)</option>
                       <option value="comp-brainly">[PL] Brainly (Kraków)</option>
-                      <option value="comp-nl-dept">[NL] DEPT® Digital Agency (Amsterdam)</option>
-                      <option value="comp-nl-framer">[NL] Framer (Amsterdam)</option>
+                      <option value="comp-hr-infinum">[HR] Infinum (Zagreb)</option>
+                      <option value="comp-cz-strv">[CZ] STRV (Prague)</option>
                     </>
                   )}
                 </select>
@@ -433,25 +437,15 @@ export const ApplicationTracker: React.FC = () => {
                     onChange={(e) => setNewCity(e.target.value)}
                     className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-200"
                   >
-                    <optgroup label="Poland (PL)">
-                      <option value="Kraków">Kraków</option>
-                      <option value="Warsaw">Warsaw</option>
-                      <option value="Gdańsk">Gdańsk</option>
-                      <option value="Wrocław">Wrocław</option>
-                      <option value="Poznań">Poznań</option>
-                    </optgroup>
-                    <optgroup label="Netherlands (NL)">
-                      <option value="Amsterdam">Amsterdam</option>
-                      <option value="Rotterdam">Rotterdam</option>
-                      <option value="Utrecht">Utrecht</option>
-                      <option value="Eindhoven">Eindhoven</option>
-                      <option value="The Hague">The Hague</option>
-                      <option value="Groningen">Groningen</option>
-                      <option value="Delft">Delft</option>
-                      <option value="Leiden">Leiden</option>
-                      <option value="Arnhem">Arnhem</option>
-                      <option value="Breda">Breda</option>
-                    </optgroup>
+                    {SUPPORTED_COUNTRIES_LIST.map((cg) => (
+                      <optgroup key={cg.countryCode} label={`${cg.country} (${cg.countryCode} — €${cg.monthlyRateEur}/mo)`}>
+                        {cg.cities.map((ct) => (
+                          <option key={`${cg.countryCode}-${ct}`} value={ct}>
+                            {ct}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
                   </select>
                 </div>
 

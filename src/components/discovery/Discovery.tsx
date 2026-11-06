@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, SupportedCountryFilter } from '../../context/AppContext';
 import { Opportunity } from '../../types';
-import { POLISH_CITIES, DUTCH_CITIES } from '../../data/financialComparisonData';
+import {
+  SUPPORTED_COUNTRIES_LIST,
+  getCountryMeta,
+} from '../../data/financialComparisonData';
 import {
   Compass,
   Search,
@@ -16,6 +19,7 @@ import {
   SlidersHorizontal,
   Globe,
   Languages,
+  Clock,
 } from 'lucide-react';
 
 export const Discovery: React.FC = () => {
@@ -43,10 +47,11 @@ export const Discovery: React.FC = () => {
 
   // Reset city filter if switching to a country where the selected city doesn't belong
   useEffect(() => {
-    if (selectedCountry === 'Poland' && DUTCH_CITIES.includes(cityFilter)) {
-      setCityFilter('All');
-    } else if (selectedCountry === 'Netherlands' && POLISH_CITIES.includes(cityFilter)) {
-      setCityFilter('All');
+    if (selectedCountry !== 'All') {
+      const countryMeta = SUPPORTED_COUNTRIES_LIST.find((c) => c.country === selectedCountry);
+      if (countryMeta && cityFilter !== 'All' && !countryMeta.cities.includes(cityFilter)) {
+        setCityFilter('All');
+      }
     }
   }, [selectedCountry]);
 
@@ -79,7 +84,7 @@ export const Discovery: React.FC = () => {
   const handleRunSearch = async () => {
     setSearching(true);
     const countryLabel =
-      selectedCountry === 'All' ? 'Poland & the Netherlands' : selectedCountry;
+      selectedCountry === 'All' ? 'all 11 European countries' : selectedCountry;
     showToast(
       `Executing multi-provider query (Greenhouse, Lever, Ashby, Official Career Pages) for ${countryLabel}...`,
       'info'
@@ -91,7 +96,7 @@ export const Discovery: React.FC = () => {
           city: cityFilter,
           category: categoryFilter,
         });
-        showToast(`Sync complete! Found ${res.newOpportunities} verified vacancies.`, 'success');
+        showToast(`Sync complete! Found ${res.newOpportunities} new vacancies across ${countryLabel}.`, 'success');
         await loadOpportunities();
         await refreshMetrics();
       } catch (err: any) {
@@ -133,6 +138,11 @@ export const Discovery: React.FC = () => {
     setActiveTab('research');
   };
 
+  const visibleCountryGroups =
+    selectedCountry === 'All'
+      ? SUPPORTED_COUNTRIES_LIST
+      : SUPPORTED_COUNTRIES_LIST.filter((c) => c.country === selectedCountry);
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-[#090d16]">
       {/* Search & Filter Toolbar */}
@@ -145,7 +155,7 @@ export const Discovery: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Filter by company, city (Kraków, Amsterdam, Rotterdam, Utrecht...), React, TypeScript, Figma, QA..."
+              placeholder="Filter by company, city (Kraków, Zagreb, Prague, Copenhagen, Tallinn, Budapest, Ljubljana...), React, TypeScript, Figma..."
               className="w-full pl-10 pr-4 py-2 bg-slate-800/80 border border-slate-700/80 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition"
             />
           </div>
@@ -157,7 +167,7 @@ export const Discovery: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${searching ? 'animate-spin' : ''}`} />
-            <span>{searching ? 'Syncing...' : 'Sync Live Providers (PL & NL)'}</span>
+            <span>{searching ? 'Syncing...' : 'Sync Live Providers (11 Countries)'}</span>
           </button>
         </div>
 
@@ -173,14 +183,47 @@ export const Discovery: React.FC = () => {
               className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer"
             >
               <option value="All" className="bg-slate-900 text-slate-200">
-                All Countries (PL + NL)
+                All 11 Countries (PL + 10 EU)
               </option>
-              <option value="Poland" className="bg-slate-900 text-slate-200">
-                Poland (PL — €600/mo Group 2)
-              </option>
-              <option value="Netherlands" className="bg-slate-900 text-slate-200">
-                Netherlands (NL — €650/mo Group 1)
-              </option>
+              <optgroup label="Group 1 — €650/month" className="bg-slate-900 text-amber-300">
+                <option value="Norway" className="bg-slate-900 text-slate-200">
+                  Norway (NO — €650/mo Group 1)
+                </option>
+                <option value="Denmark" className="bg-slate-900 text-slate-200">
+                  Denmark (DK — €650/mo Group 1)
+                </option>
+              </optgroup>
+              <optgroup label="Group 2 — €600/month" className="bg-slate-900 text-cyan-300">
+                <option value="Estonia" className="bg-slate-900 text-slate-200">
+                  Estonia (EE — €600/mo Group 2)
+                </option>
+                <option value="Slovenia" className="bg-slate-900 text-slate-200">
+                  Slovenia (SI — €600/mo Group 2)
+                </option>
+                <option value="Slovakia" className="bg-slate-900 text-slate-200">
+                  Slovakia (SK — €600/mo Group 2)
+                </option>
+                <option value="Czechia" className="bg-slate-900 text-slate-200">
+                  Czechia (CZ — €600/mo Group 2)
+                </option>
+              </optgroup>
+              <optgroup label="Group 3 — €550/month" className="bg-slate-900 text-indigo-300">
+                <option value="Poland" className="bg-slate-900 text-slate-200">
+                  Poland (PL — €550/mo Group 3)
+                </option>
+                <option value="Croatia" className="bg-slate-900 text-slate-200">
+                  Croatia (HR — €550/mo Group 3)
+                </option>
+                <option value="Hungary" className="bg-slate-900 text-slate-200">
+                  Hungary (HU — €550/mo Group 3)
+                </option>
+                <option value="Bulgaria" className="bg-slate-900 text-slate-200">
+                  Bulgaria (BG — €550/mo Group 3)
+                </option>
+                <option value="Serbia" className="bg-slate-900 text-slate-200">
+                  Serbia (RS — €550/mo Group 3)
+                </option>
+              </optgroup>
             </select>
           </div>
 
@@ -194,35 +237,21 @@ export const Discovery: React.FC = () => {
               className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer"
             >
               <option value="All" className="bg-slate-900 text-slate-200">
-                {selectedCountry === 'Poland'
-                  ? 'All Poland Cities'
-                  : selectedCountry === 'Netherlands'
-                  ? 'All Netherlands Cities'
-                  : 'All Cities (Poland & Netherlands)'}
+                {selectedCountry === 'All' ? 'All Cities (11 Countries)' : `All ${selectedCountry} Cities`}
               </option>
-              {(selectedCountry === 'All' || selectedCountry === 'Poland') && (
-                <optgroup label="Poland (PL)" className="bg-slate-900 text-indigo-300">
-                  <option value="Kraków" className="bg-slate-900 text-slate-200">Kraków (PL)</option>
-                  <option value="Warsaw" className="bg-slate-900 text-slate-200">Warsaw (PL)</option>
-                  <option value="Gdańsk" className="bg-slate-900 text-slate-200">Gdańsk / Tricity (PL)</option>
-                  <option value="Wrocław" className="bg-slate-900 text-slate-200">Wrocław (PL)</option>
-                  <option value="Poznań" className="bg-slate-900 text-slate-200">Poznań (PL)</option>
+              {visibleCountryGroups.map((cg) => (
+                <optgroup
+                  key={cg.countryCode}
+                  label={`${cg.country} (${cg.countryCode} — €${cg.monthlyRateEur}/mo)`}
+                  className="bg-slate-900 text-indigo-300"
+                >
+                  {cg.cities.map((ct) => (
+                    <option key={`${cg.countryCode}-${ct}`} value={ct} className="bg-slate-900 text-slate-200">
+                      {ct} ({cg.countryCode})
+                    </option>
+                  ))}
                 </optgroup>
-              )}
-              {(selectedCountry === 'All' || selectedCountry === 'Netherlands') && (
-                <optgroup label="Netherlands (NL)" className="bg-slate-900 text-emerald-300">
-                  <option value="Amsterdam" className="bg-slate-900 text-slate-200">Amsterdam (NL)</option>
-                  <option value="Rotterdam" className="bg-slate-900 text-slate-200">Rotterdam (NL)</option>
-                  <option value="Utrecht" className="bg-slate-900 text-slate-200">Utrecht (NL)</option>
-                  <option value="Eindhoven" className="bg-slate-900 text-slate-200">Eindhoven (NL)</option>
-                  <option value="The Hague" className="bg-slate-900 text-slate-200">The Hague (NL)</option>
-                  <option value="Groningen" className="bg-slate-900 text-slate-200">Groningen (NL)</option>
-                  <option value="Delft" className="bg-slate-900 text-slate-200">Delft (NL)</option>
-                  <option value="Leiden" className="bg-slate-900 text-slate-200">Leiden (NL)</option>
-                  <option value="Arnhem" className="bg-slate-900 text-slate-200">Arnhem (NL)</option>
-                  <option value="Breda" className="bg-slate-900 text-slate-200">Breda (NL)</option>
-                </optgroup>
-              )}
+              ))}
             </select>
           </div>
 
@@ -290,15 +319,18 @@ export const Discovery: React.FC = () => {
 
       {/* Results List */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 font-medium">
           <span>
             Showing <strong className="text-white">{opportunities.length}</strong> opportunities in{' '}
             <strong className="text-indigo-300">
-              {selectedCountry === 'All' ? 'Poland (PL) & the Netherlands (NL)' : `${selectedCountry} (${selectedCountry === 'Netherlands' ? 'NL' : 'PL'})`}
+              {selectedCountry === 'All'
+                ? 'All 11 Supported European Countries'
+                : `${selectedCountry} (${getCountryMeta(selectedCountry).countryCode} — €${getCountryMeta(selectedCountry).monthlyRateEur}/mo)`}
             </strong>
           </span>
-          <span className="text-[11px] text-slate-500">
-            Ranked objectively by IPCA Web Multimedia fit, language & financial feasibility
+          <span className="text-[11px] text-amber-300 font-semibold flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            Placement Target Deadline: 30 November 2026 (Feb/Mar–Jun/Jul 2027)
           </span>
         </div>
 
@@ -312,15 +344,14 @@ export const Discovery: React.FC = () => {
             <Compass className="w-8 h-8 text-slate-500 mx-auto" />
             <h4 className="text-sm font-semibold text-slate-300">No matching opportunities found</h4>
             <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              Try broadening your country, city, or category filters, or click "Sync Live Providers (PL & NL)".
+              Try broadening your country, city, or category filters, or click "Sync Live Providers (11 Countries)".
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3.5">
             {opportunities.map((opp) => {
               const oppCountry = opp.country || opp.company_country || 'Poland';
-              const isNL = oppCountry === 'Netherlands' || opp.country_code === 'NL';
-              const isoCode = isNL ? 'NL' : 'PL';
+              const meta = getCountryMeta(oppCountry);
               return (
                 <div
                   key={opp.id}
@@ -332,22 +363,16 @@ export const Discovery: React.FC = () => {
                         <h3 className="text-sm font-bold text-white tracking-tight">
                           {opp.title}
                         </h3>
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
-                            isNL
-                              ? 'bg-orange-500/15 text-orange-300 border-orange-500/30'
-                              : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
-                          }`}
-                        >
-                          {isoCode} • {oppCountry}
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${meta.badgeColor}`}>
+                          {meta.countryCode} • {oppCountry} ({meta.group}: €{meta.monthlyRateEur}/mo)
                         </span>
                         {opp.is_official_vacancy === 1 ? (
                           <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            Confirmed Vacancy
+                            Confirmed Vacancy / Programme
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                            Speculative Application
+                            Speculative SME Target
                           </span>
                         )}
                         <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700">
@@ -376,6 +401,10 @@ export const Discovery: React.FC = () => {
                             {opp.language_requirements}
                           </span>
                         )}
+                        <span className="flex items-center gap-1 text-amber-300 font-medium">
+                          <Clock className="w-3.5 h-3.5 text-amber-400" />
+                          Apply by: {opp.application_deadline || '2026-11-30'}
+                        </span>
                       </div>
                     </div>
 
