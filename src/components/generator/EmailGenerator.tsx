@@ -156,18 +156,23 @@ export const EmailGenerator: React.FC = () => {
     }
   }, [currentCompany, bodyText]);
 
+  const sanitizeEmailAddress = (raw: string) =>
+    (raw || '').trim().replace(/^[<\s,;.]+|[>\s,;.]+$/g, '');
+
   // Save Draft to SQLite
   const handleSaveDraft = async () => {
-    if (!recipientEmail || !subject || !bodyText) {
+    const cleanRecipient = sanitizeEmailAddress(recipientEmail);
+    if (!cleanRecipient || !subject || !bodyText) {
       showToast('Please provide recipient email, subject, and body.', 'warning');
       return;
     }
+    if (cleanRecipient !== recipientEmail) setRecipientEmail(cleanRecipient);
 
     if (window.desktopAPI?.saveDraft) {
       try {
         await window.desktopAPI.saveDraft({
           company_id: selectedCompId,
-          recipient_email: recipientEmail,
+          recipient_email: cleanRecipient,
           recipient_name: recipientName,
           subject,
           body_text: bodyText,
@@ -186,17 +191,19 @@ export const EmailGenerator: React.FC = () => {
 
   // Direct Send with Safety Controls
   const handleSendEmail = async () => {
-    if (!recipientEmail || !subject || !bodyText) {
+    const cleanRecipient = sanitizeEmailAddress(recipientEmail);
+    if (!cleanRecipient || !subject || !bodyText) {
       showToast('Recipient, subject, and message body are required.', 'warning');
       return;
     }
+    if (cleanRecipient !== recipientEmail) setRecipientEmail(cleanRecipient);
 
     setSending(true);
     try {
       // First save draft
       const saveRes = await window.desktopAPI.saveDraft({
         company_id: selectedCompId,
-        recipient_email: recipientEmail,
+        recipient_email: cleanRecipient,
         recipient_name: recipientName,
         subject,
         body_text: bodyText,
@@ -220,10 +227,12 @@ export const EmailGenerator: React.FC = () => {
 
   // Export .eml
   const handleExportEml = async () => {
+    const cleanEmail = sanitizeEmailAddress(recipientEmail);
+    if (cleanEmail !== recipientEmail) setRecipientEmail(cleanEmail);
     try {
       const saveRes = await window.desktopAPI.saveDraft({
         company_id: selectedCompId,
-        recipient_email: recipientEmail,
+        recipient_email: cleanEmail,
         recipient_name: recipientName,
         subject,
         body_text: bodyText,
@@ -310,6 +319,7 @@ export const EmailGenerator: React.FC = () => {
               type="email"
               value={recipientEmail}
               onChange={(e) => setRecipientEmail(e.target.value)}
+              onBlur={() => setRecipientEmail((prev) => sanitizeEmailAddress(prev))}
               className="w-full px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"
             />
           </div>

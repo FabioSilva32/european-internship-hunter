@@ -740,9 +740,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 0,
     contact: {
       id: 'ct-rs-vega',
-      name: 'Vega IT Internship & People Team',
-      role: 'Internship Coordinator',
-      email: 'jobs@vegait.rs',
+      name: 'Maja Božić (Vega IT People & Internship Team)',
+      role: 'Internship & Talent Coordinator',
+      email: 'hello.maja@vegaitglobal.com',
       source_type: 'verified_website',
     },
     opportunity: {

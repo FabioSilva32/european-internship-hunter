@@ -437,6 +437,7 @@ function registerIpcHandlers() {
   ipcMain.handle('db:saveDraft', async (event, draft) => {
     const id = draft.id || 'draft-' + Date.now();
     const existing = db.prepare('SELECT id FROM email_drafts WHERE id = ?').get(id);
+    const cleanedEmail = (draft.recipient_email || '').trim().replace(/^[<\s,;.]+|[>\s,;.]+$/g, '');
 
     let appId = draft.application_id || null;
     if (!appId && draft.company_id) {
@@ -453,7 +454,7 @@ function registerIpcHandlers() {
           status = ?, updated_at = datetime('now')
         WHERE id = ?
       `).run(
-        appId, draft.recipient_email, draft.recipient_name, draft.subject, draft.body_text,
+        appId, cleanedEmail, draft.recipient_name, draft.subject, draft.body_text,
         draft.template_type, draft.variant || 'concise', draft.cv_document_id || null,
         draft.is_approved ? 1 : 0, draft.status || 'draft', id
       );
@@ -464,7 +465,7 @@ function registerIpcHandlers() {
           body_text, template_type, variant, cv_document_id, is_approved, status
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
-        id, appId, draft.company_id, draft.recipient_email,
+        id, appId, draft.company_id, cleanedEmail,
         draft.recipient_name, draft.subject, draft.body_text, draft.template_type,
         draft.variant || 'concise', draft.cv_document_id || null,
         draft.is_approved ? 1 : 0, draft.status || 'draft'

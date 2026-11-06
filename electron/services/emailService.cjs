@@ -199,13 +199,25 @@ async function sendEmail({
   const userProfile = db.prepare('SELECT full_name FROM user_profile LIMIT 1').get();
   const senderName = userProfile?.full_name || 'Fábio Silva';
 
+  // Sanitize recipient email (strip accidental trailing dots, commas, semicolons, spaces, or angle brackets)
+  const sanitizedRecipient = (draft.recipient_email || '')
+    .trim()
+    .replace(/^[<\s,;.]+|[>\s,;.]+$/g, '');
+  if (!sanitizedRecipient || !sanitizedRecipient.includes('@')) {
+    throw new Error(`Invalid recipient email address: "${draft.recipient_email}"`);
+  }
+  if (sanitizedRecipient !== draft.recipient_email) {
+    draft.recipient_email = sanitizedRecipient;
+    db.prepare('UPDATE email_drafts SET recipient_email = ? WHERE id = ?').run(sanitizedRecipient, draftId);
+  }
+
   // 5. If live Gmail transporter is configured, dispatch real email
   let liveSent = false;
   const transporter = await createTransporter(db);
   if (transporter && !isDryRun) {
     const mailOptions = {
       from: `"${senderName}" <${fromEmail}>`,
-      to: draft.recipient_email,
+      to: sanitizedRecipient,
       subject: draft.subject,
       text: draft.body_text
     };
