@@ -46,6 +46,9 @@ export const CompanyResearch: React.FC = () => {
     if (window.desktopAPI?.getCompanies) {
       window.desktopAPI.getCompanies({}).then((data: Company[]) => {
         setCompanyList(data);
+        if (data.length > 0 && (!selectedCompanyId || !data.some((c) => c.id === selectedCompanyId))) {
+          setSelectedCompanyId(data[0].id);
+        }
       });
     }
   }, []);
@@ -99,7 +102,7 @@ export const CompanyResearch: React.FC = () => {
   return (
     <div className="flex-1 flex overflow-hidden bg-[#090d16]">
       {/* Left Company List Selector */}
-      <div className="w-76 border-r border-slate-800 bg-slate-900/40 flex flex-col shrink-0">
+      <div className="w-80 border-r border-slate-800 bg-slate-900/40 flex flex-col shrink-0">
         <div className="p-3.5 border-b border-slate-800 flex items-center justify-between gap-2">
           <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5 shrink-0">
             <Building2 className="w-3.5 h-3.5 text-indigo-400" />
@@ -108,7 +111,7 @@ export const CompanyResearch: React.FC = () => {
           <select
             value={selectedCountry}
             onChange={(e) => setSelectedCountry(e.target.value as SupportedCountryFilter)}
-            className="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
+            className="max-w-[135px] truncate bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
           >
             <option value="All">All (11)</option>
             {SUPPORTED_COUNTRIES_LIST.map((cnt) => (
