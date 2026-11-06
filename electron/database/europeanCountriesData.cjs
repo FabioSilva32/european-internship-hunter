@@ -48,9 +48,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 0,
     contact: {
       id: 'ct-hr-infinum',
-      name: 'Infinum Careers & Academy Team',
-      role: 'Talent Acquisition',
-      email: 'careers@infinum.com',
+      name: 'Infinum People & Academy Team',
+      role: 'Official Contact & Talent Desk',
+      email: 'hello@infinum.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -101,8 +101,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-hr-qagency',
       name: 'Q Agency People & Culture',
-      role: 'Recruitment Team',
-      email: 'careers@q.agency',
+      role: 'Official Agency Contact',
+      email: 'hello@q.agency',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -204,9 +204,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 1,
     contact: {
       id: 'ct-hr-profico',
-      name: 'Profico Careers Team',
-      role: 'HR & Recruitment',
-      email: 'careers@profico.hr',
+      name: 'Profico Split Team',
+      role: 'Official Contact & HR',
+      email: 'info@profico.hr',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -260,9 +260,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 1,
     contact: {
       id: 'ct-hu-uxstudio',
-      name: 'UX studio Recruitment Team',
+      name: 'UX studio Budapest Team',
       role: 'People & Talent',
-      email: 'info@uxstudioteam.com',
+      email: 'hello@uxstudioteam.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -422,7 +422,7 @@ const EUROPEAN_COMPANIES = [
       id: 'ct-ee-helmes',
       name: 'Helmes People & Careers',
       role: 'HR & Recruitment Tallinn',
-      email: 'jobs@helmes.com',
+      email: 'info@helmes.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -473,8 +473,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-ee-bitweb',
       name: 'Bitweb Recruitment Team',
-      role: 'Agency Hiring',
-      email: 'info@bitweb.ee',
+      role: 'Agency Hiring (bitweb.ee/en/careers)',
+      email: 'career@bitweb.ee',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -525,8 +525,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-ee-mooncascade',
       name: 'Mooncascade Talent Team',
-      role: 'HR & Recruitment',
-      email: 'careers@mooncascade.com',
+      role: 'HR & Recruitment (mooncascade.com/career)',
+      email: 'jobs@mooncascade.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -580,9 +580,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 0,
     contact: {
       id: 'ct-bg-mentormate',
-      name: 'MentorMate Bulgaria Recruitment',
-      role: 'Talent Acquisition',
-      email: 'careers@mentormate.com',
+      name: 'MentorMate Bulgaria Team',
+      role: 'Official Contact & Talent Desk',
+      email: 'info@mentormate.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -608,8 +608,8 @@ const EUROPEAN_COMPANIES = [
   {
     id: 'comp-bg-despark',
     name: 'Despark',
-    website: 'https://www.despark.com',
-    careers_url: 'https://www.despark.com/careers',
+    website: 'https://despark.io',
+    careers_url: 'https://despark.io/careers',
     city: 'Sofia',
     country: 'Bulgaria',
     country_code: 'BG',
@@ -634,7 +634,7 @@ const EUROPEAN_COMPANIES = [
       id: 'ct-bg-despark',
       name: 'Despark People Team',
       role: 'Studio Recruitment',
-      email: 'hello@despark.com',
+      email: 'hello@despark.io',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -684,9 +684,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 1,
     contact: {
       id: 'ct-bg-devrix',
-      name: 'DevriX Careers Team',
-      role: 'HR & Recruitment',
-      email: 'careers@devrix.com',
+      name: 'DevriX Sofia Team',
+      role: 'Official Contact & HR (devrix.com/contact)',
+      email: 'contact@devrix.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -793,8 +793,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-rs-htec',
       name: 'HTEC Talent Acquisition',
-      role: 'University Relations & Recruitment',
-      email: 'careers@htecgroup.com',
+      role: 'University Relations & Recruitment (htecgroup.com/careers)',
+      email: 'career@htecgroup.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -846,7 +846,7 @@ const EUROPEAN_COMPANIES = [
       id: 'ct-rs-vivify',
       name: 'Vivify Ideas HR Team',
       role: 'Talent & Academy',
-      email: 'careers@vivifyideas.com',
+      email: 'jobs@vivifyideas.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -901,8 +901,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-si-povio',
       name: 'Povio Ljubljana Talent & Academy Team',
-      role: 'Recruitment Team',
-      email: 'jobs@povio.com',
+      role: 'Recruitment Team (povio.com/careers)',
+      email: 'recruiting@povio.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -952,9 +952,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 1,
     contact: {
       id: 'ct-si-agiledrop',
-      name: 'Agiledrop Careers Team',
-      role: 'HR & Talent',
-      email: 'careers@agiledrop.com',
+      name: 'Agiledrop Ljubljana Team',
+      role: 'HR & Talent (agiledrop.com)',
+      email: 'hello@agiledrop.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1061,8 +1061,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-sk-goodrequest',
       name: 'GoodRequest People Team',
-      role: 'HR & Recruitment',
-      email: 'career@goodrequest.com',
+      role: 'HR & Recruitment (goodrequest.com/career)',
+      email: 'hello@goodrequest.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1113,8 +1113,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-sk-vacuumlabs',
       name: 'Vacuumlabs Talent Team',
-      role: 'Recruitment',
-      email: 'jobs@vacuumlabs.com',
+      role: 'Official Contact & Recruitment',
+      email: 'contact@vacuumlabs.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1165,8 +1165,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-sk-wezeo',
       name: 'WEZEO Studio Team',
-      role: 'Talent & Operations',
-      email: 'hello@wezeo.com',
+      role: 'Talent & Recruitment (wezeo.com/careers)',
+      email: 'join@wezeo.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1220,9 +1220,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 0,
     contact: {
       id: 'ct-cz-strv',
-      name: 'STRV Recruiting Team',
-      role: 'Talent Acquisition Prague & Brno',
-      email: 'jobs@strv.com',
+      name: 'STRV Prague & Brno Team',
+      role: 'Official Studio Contact (strv.com)',
+      email: 'hello@strv.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1272,9 +1272,9 @@ const EUROPEAN_COMPANIES = [
     is_speculative_candidate: 1,
     contact: {
       id: 'ct-cz-ackee',
-      name: 'Ackee HR & People Team',
-      role: 'Agency Recruitment',
-      email: 'jobs@ackee.cz',
+      name: 'Ackee Prague Team',
+      role: 'Official Agency Contact (ackee.agency)',
+      email: 'info@ackee.cz',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1325,8 +1325,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-cz-oakslab',
       name: "OAK'S LAB Talent Team",
-      role: 'People & Culture',
-      email: 'careers@oakslab.com',
+      role: 'People & Culture (oakslab.com)',
+      email: 'hello@oakslab.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1377,8 +1377,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-cz-moravio',
       name: 'Moravio Hiring Team',
-      role: 'HR & Recruitment',
-      email: 'hello@moravio.com',
+      role: 'HR & Recruitment (moravio.com)',
+      email: 'info@moravio.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1433,8 +1433,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-no-kodeworks',
       name: 'KodeWorks Recruitment',
-      role: 'Talent Team',
-      email: 'kontakt@kodeworks.no',
+      role: 'Talent Team (kodeworks.no/karriere)',
+      email: 'jobb@kodeworks.no',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1485,8 +1485,8 @@ const EUROPEAN_COMPANIES = [
     contact: {
       id: 'ct-no-bleed',
       name: 'Bleed Studio Oslo Team',
-      role: 'Internships & Careers',
-      email: 'info@bleed.com',
+      role: 'Internships & Careers (bleed.com/about)',
+      email: 'workoslo@bleed.com',
       source_type: 'verified_website',
     },
     opportunity: {
@@ -1821,6 +1821,21 @@ function seedEuropeanCountriesData(dbInstance) {
     if (typeof dbInstance.save === 'function') {
       dbInstance.save();
     }
+
+    // Also ensure Polish company contacts use verified on-site / SMTP-verified emails
+    const polishContactFixes = [
+      { compId: 'comp-11bit', email: 'info@11bitstudios.com', name: '11 bit studios Contact & HR' },
+      { compId: 'comp-allegro', email: 'staze@allegro.pl', name: 'Allegro Internships & Early Careers (Staże)' },
+      { compId: 'comp-docplanner', email: 'work@docplanner.com', name: 'Docplanner People & Careers' },
+      { compId: 'comp-railwaymen', email: 'praca@railwaymen.org', name: 'Railwaymen Kraków Recruitment' },
+      { compId: 'comp-softwaremind', email: 'office@softwaremind.com', name: 'Software Mind Office & People Team' },
+      { compId: 'comp-starward', email: 'info@starward.co', name: 'Starward Industries Kraków Studio' },
+    ];
+    const updatePlContact = dbInstance.prepare('UPDATE contacts SET email = ?, name = ?, is_verified = 1 WHERE company_id = ?');
+    for (const fix of polishContactFixes) {
+      updatePlContact.run(fix.email, fix.name, fix.compId);
+    }
+
     console.log(`[DB] Seeded ${addedCount} verified companies across 10 new European countries (NL removed).`);
   } catch (err) {
     console.error('[DB] Error seeding European countries data:', err);
